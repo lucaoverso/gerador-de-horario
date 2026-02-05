@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Gerador de Horário Escolar</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <h1>Gerador de Horário Escolar</h1>
+
+  <section class="card">
+    <h2>Cadastrar Professor</h2>
+    <input id="prof-nome" placeholder="Nome do professor">
+
+    <fieldset>
+      <legend>Dias disponíveis</legend>
+      <label><input type="checkbox" name="prof-dias" value="Seg">Seg</label>
+      <label><input type="checkbox" name="prof-dias" value="Ter">Ter</label>
+      <label><input type="checkbox" name="prof-dias" value="Qua">Qua</label>
+      <label><input type="checkbox" name="prof-dias" value="Qui">Qui</label>
+      <label><input type="checkbox" name="prof-dias" value="Sex">Sex</label>
+    </fieldset>
+
+    <h4>Restrições de horário</h4>
+
+    <label>
+      Aulas que NÃO pode pegar (ex: 1,5)
+      <input id="prof-aulas-proibidas" placeholder="1,5">
+    </label>
+
+    <h4>Preferências</h4>
+
+    <label>
+      Aulas preferidas (ex: 5)
+      <input id="prof-aulas-preferidas" placeholder="5">
+    </label>
+    <button onclick="cadastrarProfessor()">Cadastrar</button>
+  </section>
+
+  <section class="card">
+    <h2>Cadastrar Turma</h2>
+    <input id="turma-nome" placeholder="Nome da turma">
+
+    <select id="turma-turno">
+      <option value="M">Matutino (5)</option>
+      <option value="V">Vespertino (5)</option>
+      <option value="I">Integral (8)</option>
+    </select>
+
+    <button onclick="cadastrarTurma()">Cadastrar</button>
+  </section>
+
+  <section class="card">
+    <h2>Adicionar Disciplina</h2>
+
+    <select id="disc-turma"></select>
+    <input id="disc-nome" placeholder="Disciplina">
+    <input id="disc-aulas" type="number" placeholder="Aulas semanais">
+    <input id="disc-agrupamento" type="number" value="1" min="1" placeholder="Aulas seguidas">
+    <select id="disc-professor"></select>
+
+    <button onclick="adicionarDisciplina()">Adicionar disciplina</button>
+  </section>
+
+  <section class="card">
+    <h2>Viabilidade do Horário</h2>
+    <div id="medidor"></div>
+  </section>
+
+  <section class="card">
+    <h2>Horários</h2>
+    <label>Seed:</label>
+    <input id="seed" type="number" placeholder="opcional">
+
+    <br><br>
+
+    <button onclick="gerarHorario()">Gerar Horário</button>
+    <button onclick="congelarHorarioAtual()">Congelar Horário</button>
+
+    <hr>
+    <button onclick="limparDados()" class="perigo">Limpar dados</button>
+  </section>
+
+  <section class="card">
+
+    <div id="horarios"></div>
+    <button onclick="mostrarTodosHorarios()">Mostrar todos</button>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

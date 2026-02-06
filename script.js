@@ -5,6 +5,24 @@ const diasSemana = ["Seg", "Ter", "Qua", "Qui", "Sex"];
 const turnos = { M: 5, V: 5, I: 8, EMR: 6 };
 
 // ===================================================
+// MAPA DE FAIXA GLOBAL DE HORÁRIO
+// ===================================================
+function faixaGlobal(turno, aula) {
+  if (turno === "M") return aula; // 1–5 manhã
+
+  if (turno === "I") {
+    if (aula <= 5) return aula;   // manhã
+    return 5 + (aula - 5);        // tarde 1–3 → 6–8
+  }
+
+  if (turno === "V") return 5 + aula;   // 6–10
+  if (turno === "EMR") return 5 + aula; // 6–11
+
+  return null;
+}
+
+
+// ===================================================
 // GERADOR ALEATÓRIO COM SEED
 // ===================================================
 let seedAtual = Date.now();
@@ -92,6 +110,9 @@ function carregarProfessorParaEdicao() {
 
   el("prof-proibidas-i").value =
     professorEmEdicao.restricoes?.aulasProibidas?.I?.join(",") || "";
+
+  el("prof-proibidas-emr").value =
+    professorEmEdicao.restricoes?.aulasProibidas?.EMR?.join(",") || "";
 }
 function limparFormularioProfessor() {
   professorEmEdicao = null;
@@ -99,6 +120,7 @@ function limparFormularioProfessor() {
   el("prof-proibidas-m").value = "";
   el("prof-proibidas-v").value = "";
   el("prof-proibidas-i").value = "";
+  el("prof-proibidas-emr").value = "";
 
   document.querySelectorAll("input[type=checkbox]").forEach(cb => {
     cb.checked = false;
@@ -126,6 +148,7 @@ function salvarProfessor() {
   const proibidasM = parseLista("prof-proibidas-m");
   const proibidasV = parseLista("prof-proibidas-v");
   const proibidasI = parseLista("prof-proibidas-i");
+  const proibidasEMR = parseLista("prof-proibidas-emr");
 
   const dados = {
     nome,
@@ -134,7 +157,8 @@ function salvarProfessor() {
       aulasProibidas: {
         M: proibidasM,
         V: proibidasV,
-        I: proibidasI
+        I: proibidasI,
+        EMR: proibidasEMR
       }
     },
     preferencias: {
@@ -245,10 +269,13 @@ function inicializarHorarios() {
         banco.horarios[turma.nome].push({
           dia,
           aula,
+          turno: turma.turno,
+          faixa: faixaGlobal(turma.turno, aula),
           disciplina: null,
           professor: null,
           fixo: false
         });
+
       }
     });
   });
@@ -275,10 +302,13 @@ function inicializarHorariosIncremental() {
           banco.horarios[turma.nome].push({
             dia,
             aula,
+            turno: turma.turno,
+            faixa: faixaGlobal(turma.turno, aula),
             disciplina: null,
             professor: null,
             fixo: false
           });
+
         }
       });
     }
@@ -293,10 +323,14 @@ function slotDisponivel(slot) {
 // ===================================================
 // REGRAS
 // ===================================================
-function professorLivre(nome, dia, aula) {
-  return !Object.values(banco.horarios).flat()
-    .some(s => s.professor === nome && s.dia === dia && s.aula === aula);
+function professorLivre(nome, dia, faixa) {
+  return !Object.values(banco.horarios).flat().some(s =>
+    s.professor === nome &&
+    s.dia === dia &&
+    s.faixa === faixa
+  );
 }
+
 
 function aulaPermitidaPorNivel(professor, aula, turno, nivel) {
   if (nivel !== 1) return true;
@@ -389,7 +423,10 @@ function tentarGerarComNivel(nivel, seedBase) {
             for (const slot of candidatos) {
               let conflito = false;
               for (let i = 0; i < disc.agrupamento; i++) {
-                if (!professorLivre(professor.nome, slot.dia, slot.aula + i)) {
+                if (!professorLivre(
+                  professor.nome,
+                  slot.dia,
+                  faixaGlobal(turma.turno, slot.aula + i))) {
                   conflito = true; break;
                 }
               }
@@ -437,6 +474,12 @@ function gerarHorario() {
   salvar();
   mostrarTodosHorarios();
   mostrarRelatorioGeracao();
+}
+
+function gerarComNovaSeed() {
+  banco.seedBase = Date.now(); // nova seed
+  salvar();
+  gerarHorario();
 }
 
 // ===================================================

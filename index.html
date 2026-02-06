@@ -57,6 +57,14 @@
       </label>
     </fieldset>
 
+    <fieldset>
+      <legend>Ensino Médio Regular (EMR)</legend>
+      <label>
+        Aulas que NÃO pode pegar (ex: 1,5)
+        <input id="prof-proibidas-emr" placeholder="1,5">
+      </label>
+    </fieldset>
+
 
     <h4>Preferências</h4>
 
@@ -106,6 +114,7 @@
     <br><br>
 
     <button onclick="gerarHorario()">Gerar Horário</button>
+    <button onclick="gerarComNovaSeed()">Gerar Outro Horário (nova seed)</button>
     <button onclick="congelarHorarioAtual()">Congelar Horário</button>
 
     <hr>

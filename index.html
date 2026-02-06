@@ -13,6 +13,13 @@
 
   <section class="card">
     <h2>Cadastrar Professor</h2>
+    <label>
+      Professor cadastrado:
+      <select id="prof-editar" onchange="carregarProfessorParaEdicao()">
+        <option value="">-- Novo professor --</option>
+      </select>
+    </label>
+
     <input id="prof-nome" placeholder="Nome do professor">
 
     <fieldset>
@@ -26,10 +33,30 @@
 
     <h4>Restrições de horário</h4>
 
-    <label>
-      Aulas que NÃO pode pegar (ex: 1,5)
-      <input id="prof-aulas-proibidas" placeholder="1,5">
-    </label>
+    <fieldset>
+      <legend>Matutino (M)</legend>
+      <label>
+        Aulas que NÃO pode pegar (ex: 1,5)
+        <input id="prof-proibidas-m" placeholder="1,5">
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Vespertino (V)</legend>
+      <label>
+        Aulas que NÃO pode pegar (ex: 1,5)
+        <input id="prof-proibidas-v" placeholder="1,5">
+      </label>
+    </fieldset>
+
+     <fieldset>
+      <legend>Integral (I)</legend>
+      <label>
+        Aulas que NÃO pode pegar (ex: 1,5)
+        <input id="prof-proibidas-i" placeholder="1,5">
+      </label>
+    </fieldset>
+
 
     <h4>Preferências</h4>
 
@@ -37,7 +64,7 @@
       Aulas preferidas (ex: 5)
       <input id="prof-aulas-preferidas" placeholder="5">
     </label>
-    <button onclick="cadastrarProfessor()">Cadastrar</button>
+    <button onclick="salvarProfessor()">Salvar</button>
   </section>
 
   <section class="card">
@@ -48,6 +75,7 @@
       <option value="M">Matutino (5)</option>
       <option value="V">Vespertino (5)</option>
       <option value="I">Integral (8)</option>
+      <option value="EMR">Ensino Médio Regular(6)</option>
     </select>
 
     <button onclick="cadastrarTurma()">Cadastrar</button>

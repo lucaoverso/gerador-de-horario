@@ -2,7 +2,7 @@
 // CONFIGURAÇÕES GERAIS
 // ===================================================
 const diasSemana = ["Seg", "Ter", "Qua", "Qui", "Sex"];
-const turnos = { M: 5, V: 5, I: 8 };
+const turnos = { M: 5, V: 5, I: 8, EMR: 6 };
 
 // ===================================================
 // GERADOR ALEATÓRIO COM SEED
@@ -24,7 +24,8 @@ function random() {
 let banco = {
   professores: [],
   turmas: [],
-  horarios: {}
+  horarios: {},
+  seedBase: null
 };
 
 let relatorioGeracao = {
@@ -62,40 +63,100 @@ function embaralhar(arr) {
 // ===================================================
 // CADASTRO DE PROFESSORES
 // ===================================================
-function cadastrarProfessor() {
+
+let professorEmEdicao = null;
+
+function carregarProfessorParaEdicao() {
+  const nome = el("prof-editar").value;
+  professorEmEdicao = banco.professores.find(p => p.nome === nome);
+
+  if (!professorEmEdicao) {
+    limparFormularioProfessor();
+    return;
+  }
+
+  // nome
+  el("prof-nome").value = professorEmEdicao.nome;
+
+  // dias
+  document.querySelectorAll("input[type=checkbox]").forEach(cb => {
+    cb.checked = professorEmEdicao.dias.includes(cb.value);
+  });
+
+  // restrições por turno
+  el("prof-proibidas-m").value =
+    professorEmEdicao.restricoes?.aulasProibidas?.M?.join(",") || "";
+
+  el("prof-proibidas-v").value =
+    professorEmEdicao.restricoes?.aulasProibidas?.V?.join(",") || "";
+
+  el("prof-proibidas-i").value =
+    professorEmEdicao.restricoes?.aulasProibidas?.I?.join(",") || "";
+}
+function limparFormularioProfessor() {
+  professorEmEdicao = null;
+  el("prof-nome").value = "";
+  el("prof-proibidas-m").value = "";
+  el("prof-proibidas-v").value = "";
+  el("prof-proibidas-i").value = "";
+
+  document.querySelectorAll("input[type=checkbox]").forEach(cb => {
+    cb.checked = false;
+  });
+}
+
+
+function parseLista(id) {
+  return el(id)?.value
+    .split(",")
+    .map(n => Number(n.trim()))
+    .filter(n => !isNaN(n)) || [];
+}
+
+function salvarProfessor() {
   const nome = el("prof-nome").value.trim();
   const dias = [...document.querySelectorAll("input[type=checkbox]:checked")]
     .map(c => c.value);
-
-  const aulasProibidas = el("prof-aulas-proibidas")?.value
-    .split(",")
-    .map(n => Number(n.trim()))
-    .filter(n => !isNaN(n)) || [];
-
-  const aulasPreferidas = el("prof-aulas-preferidas")?.value
-    .split(",")
-    .map(n => Number(n.trim()))
-    .filter(n => !isNaN(n)) || [];
 
   if (!nome || dias.length === 0) {
     alert("Informe nome e dias disponíveis.");
     return;
   }
 
-  banco.professores.push({
+  const proibidasM = parseLista("prof-proibidas-m");
+  const proibidasV = parseLista("prof-proibidas-v");
+  const proibidasI = parseLista("prof-proibidas-i");
+
+  const dados = {
     nome,
     dias,
-    restricoes: { aulasProibidas },
+    restricoes: {
+      aulasProibidas: {
+        M: proibidasM,
+        V: proibidasV,
+        I: proibidasI
+      }
+    },
     preferencias: {
-      aulasPreferidas,
+      aulasPreferidas: [],
       pesoPreferencia: 2
     }
-  });
+  };
+
+  if (professorEmEdicao) {
+    // 🔁 ATUALIZA professor existente
+    Object.assign(professorEmEdicao, dados);
+  } else {
+    // ➕ NOVO professor
+    banco.professores.push(dados);
+  }
 
   salvar();
   atualizarSelects();
   atualizarMedidor();
+  limparFormularioProfessor();
 }
+
 
 // ===================================================
 // CADASTRO DE TURMAS E DISCIPLINAS
@@ -103,7 +164,6 @@ function cadastrarProfessor() {
 function cadastrarTurma() {
   const nome = el("turma-nome").value.trim();
   const turno = el("turma-turno").value;
-
   if (!nome) return alert("Informe o nome da turma.");
 
   banco.turmas.push({ nome, turno, disciplinas: [] });
@@ -153,7 +213,6 @@ function diasMinimosRecomendados(total) {
 function atualizarMedidor() {
   const div = el("medidor");
   if (!div) return;
-
   div.innerHTML = "";
 
   banco.professores.forEach(p => {
@@ -163,14 +222,8 @@ function atualizarMedidor() {
 
     let classe = "verde";
     let status = "OK";
-
-    if (diasDisp < min) {
-      classe = "vermelho";
-      status = "Crítico";
-    } else if (diasDisp === min) {
-      classe = "amarelo";
-      status = "Limite";
-    }
+    if (diasDisp < min) { classe = "vermelho"; status = "Crítico"; }
+    else if (diasDisp === min) { classe = "amarelo"; status = "Limite"; }
 
     div.innerHTML += `
       <div class="medidor-item ${classe}">
@@ -185,72 +238,100 @@ function atualizarMedidor() {
 // ===================================================
 function inicializarHorarios() {
   banco.horarios = {};
-
   banco.turmas.forEach(turma => {
     banco.horarios[turma.nome] = [];
-
     diasSemana.forEach(dia => {
       for (let aula = 1; aula <= turnos[turma.turno]; aula++) {
         banco.horarios[turma.nome].push({
           dia,
           aula,
           disciplina: null,
-          professor: null
+          professor: null,
+          fixo: false
         });
       }
     });
   });
 }
 
+function inicializarHorariosIncremental() {
+  // se não existe OU se não tem esta turma, inicializa tudo
+  if (
+    !banco.horarios ||
+    Object.keys(banco.horarios).length === 0
+  ) {
+    inicializarHorarios();
+    return;
+  }
+
+  // garante que TODAS as turmas tenham slots
+  banco.turmas.forEach(turma => {
+    if (!banco.horarios[turma.nome] ||
+      banco.horarios[turma.nome].length === 0) {
+
+      banco.horarios[turma.nome] = [];
+      diasSemana.forEach(dia => {
+        for (let aula = 1; aula <= turnos[turma.turno]; aula++) {
+          banco.horarios[turma.nome].push({
+            dia,
+            aula,
+            disciplina: null,
+            professor: null,
+            fixo: false
+          });
+        }
+      });
+    }
+  });
+}
+
+
+function slotDisponivel(slot) {
+  return !slot.professor && slot.fixo !== true;
+}
+
 // ===================================================
 // REGRAS
 // ===================================================
 function professorLivre(nome, dia, aula) {
-  return !Object.values(banco.horarios)
-    .flat()
-    .some(s =>
-      s.professor === nome &&
-      s.dia === dia &&
-      s.aula === aula
-    );
+  return !Object.values(banco.horarios).flat()
+    .some(s => s.professor === nome && s.dia === dia && s.aula === aula);
 }
 
-function aulaPermitidaPorNivel(professor, aula, nivel) {
-  if (nivel === 1) {
-    return !professor.restricoes?.aulasProibidas?.includes(aula);
-  }
-  return true;
+function aulaPermitidaPorNivel(professor, aula, turno, nivel) {
+  if (nivel !== 1) return true;
+
+  const restricoes = professor.restricoes?.aulasProibidas;
+  if (!restricoes) return true;
+
+  const proibidasNoTurno = restricoes[turno] || [];
+  return !proibidasNoTurno.includes(aula);
 }
 
 function contarAulasNoDia(nome, turma, dia) {
   return banco.horarios[turma]
-    .filter(s => s.professor === nome && s.dia === dia)
-    .length;
+    .filter(s => s.professor === nome && s.dia === dia).length;
 }
 
 // ===================================================
-// HEURÍSTICA POR NÍVEL
+// HEURÍSTICA
 // ===================================================
 function pontuacaoSlotPorNivel(slot, professor, turma, nivel) {
   let score = 0;
-
-  if (nivel === 1) {
-    if (professor.preferencias?.aulasPreferidas?.includes(slot.aula)) {
-      score += professor.preferencias.pesoPreferencia || 1;
-    }
-  }
+  if (nivel === 1 &&
+    professor.preferencias?.aulasPreferidas?.includes(slot.aula))
+    score += professor.preferencias.pesoPreferencia || 1;
 
   score -= contarAulasNoDia(professor.nome, turma, slot.dia);
   score += random() * 0.1;
-
   return score;
 }
 
 // ===================================================
-// TENTATIVA DE GERAÇÃO POR NÍVEL
+// GERAÇÃO (COM INCREMENTAL)
 // ===================================================
 function tentarGerarComNivel(nivel, seedBase) {
-  const MAX_TENTATIVAS = 25;
+  const MAX_TENTATIVAS = 10000;
 
   for (let tentativa = 1; tentativa <= MAX_TENTATIVAS; tentativa++) {
     try {
@@ -258,17 +339,44 @@ function tentarGerarComNivel(nivel, seedBase) {
       inicializarHorarios();
 
       for (const turma of banco.turmas) {
-        for (const disc of turma.disciplinas) {
+        const disciplinasOrdenadas = [...turma.disciplinas].sort((a, b) => {
+          const pa = banco.professores.find(p => p.nome === a.professor);
+          const pb = banco.professores.find(p => p.nome === b.professor);
+
+          // professores com MENOS dias disponíveis vêm primeiro
+          return pa.dias.length - pb.dias.length;
+        });
+
+        for (const disc of disciplinasOrdenadas) {
           const professor = banco.professores.find(p => p.nome === disc.professor);
           const blocos = disc.aulas / disc.agrupamento;
 
-          for (let b = 0; b < blocos; b++) {
+          let ja = banco.horarios[turma.nome]
+            .filter(s => s.professor === professor.nome && s.disciplina === disc.nome)
+            .length / disc.agrupamento;
+
+          for (let b = ja; b < blocos; b++) {
             let candidatos = banco.horarios[turma.nome]
               .filter(s =>
-                !s.professor &&
+                slotDisponivel(s) &&
                 professor.dias.includes(s.dia) &&
-                aulaPermitidaPorNivel(professor, s.aula, nivel)
+                aulaPermitidaPorNivel(
+                  professor,
+                  s.aula,
+                  turma.turno,
+                  nivel
+                )
               );
+
+            if (candidatos.length === 0 && nivel === 1) {
+              // tenta ignorar aulas proibidas localmente
+              candidatos = banco.horarios[turma.nome]
+                .filter(s =>
+                  slotDisponivel(s) &&
+                  professor.dias.includes(s.dia)
+                );
+            }
+
 
             candidatos = embaralhar(candidatos);
             candidatos.sort((a, b) =>
@@ -280,26 +388,16 @@ function tentarGerarComNivel(nivel, seedBase) {
 
             for (const slot of candidatos) {
               let conflito = false;
-
               for (let i = 0; i < disc.agrupamento; i++) {
-                if (!professorLivre(
-                  professor.nome,
-                  slot.dia,
-                  slot.aula + i
-                )) {
-                  conflito = true;
-                  break;
+                if (!professorLivre(professor.nome, slot.dia, slot.aula + i)) {
+                  conflito = true; break;
                 }
               }
-
               if (conflito) continue;
 
               for (let i = 0; i < disc.agrupamento; i++) {
                 const s = banco.horarios[turma.nome]
-                  .find(x =>
-                    x.dia === slot.dia &&
-                    x.aula === slot.aula + i
-                  );
+                  .find(x => x.dia === slot.dia && x.aula === slot.aula + i);
                 s.professor = professor.nome;
                 s.disciplina = disc.nome;
               }
@@ -307,41 +405,32 @@ function tentarGerarComNivel(nivel, seedBase) {
               alocado = true;
               break;
             }
-
-            if (!alocado) throw new Error("Falha");
+            if (!alocado) throw "falha";
           }
         }
       }
-
       return true;
-
-    } catch (e) {}
+    } catch { }
   }
-
   return false;
 }
 
 // ===================================================
-// GERADOR PRINCIPAL (3 NÍVEIS + RELATÓRIO)
+// GERADOR PRINCIPAL
 // ===================================================
 function gerarHorario() {
   relatorioGeracao = { nivelUsado: null, ajustes: [] };
-  const seedBase = Number(el("seed")?.value || Date.now());
+  const seedBase = banco.seedBase || Number(el("seed")?.value || Date.now());
+  banco.seedBase = seedBase;
 
   if (tentarGerarComNivel(1, seedBase)) {
     relatorioGeracao.nivelUsado = "Estrito";
   } else if (tentarGerarComNivel(2, seedBase)) {
     relatorioGeracao.nivelUsado = "Flexível";
-    relatorioGeracao.ajustes.push(
-      "Restrições de aulas proibidas foram ignoradas."
-    );
   } else if (tentarGerarComNivel(3, seedBase)) {
     relatorioGeracao.nivelUsado = "Emergencial";
-    relatorioGeracao.ajustes.push(
-      "Restrições e preferências foram ignoradas."
-    );
   } else {
-    alert("❌ Nenhum horário possível, nem em modo emergencial.");
+    alert("❌ Nenhum horário possível.");
     return;
   }
 
@@ -351,73 +440,56 @@ function gerarHorario() {
 }
 
 // ===================================================
-// RELATÓRIO
+// CONGELAMENTO
 // ===================================================
-function mostrarRelatorioGeracao() {
-  let msg = `Horário gerado no modo: ${relatorioGeracao.nivelUsado}\n`;
-
-  if (relatorioGeracao.ajustes.length > 0) {
-    msg += "\nAjustes realizados:\n";
-    relatorioGeracao.ajustes.forEach(a => msg += `- ${a}\n`);
-  }
-
-  alert(msg);
+function congelarHorarioAtual() {
+  Object.values(banco.horarios).flat().forEach(s => {
+    if (s.professor) s.fixo = true;
+  });
+  salvar();
+  alert("Horário congelado.");
 }
 
 // ===================================================
-// VISUALIZAÇÃO DOS HORÁRIOS
+// RELATÓRIO
+// ===================================================
+function mostrarRelatorioGeracao() {
+  alert(`Horário gerado no modo: ${relatorioGeracao.nivelUsado}`);
+}
+
+// ===================================================
+// VISUALIZAÇÃO
 // ===================================================
 function mostrarTodosHorarios() {
   const container = el("horarios");
   if (!container) return;
-
   container.innerHTML = "";
 
   banco.turmas.forEach(turma => {
     container.innerHTML += `<h3>Turma ${turma.nome}</h3>`;
-
-    let html = `
-      <table>
-        <tr>
-          <th>Aula</th>
-          ${diasSemana.map(d => `<th>${d}</th>`).join("")}
-        </tr>`;
+    let html = `<table><tr><th>Aula</th>${diasSemana.map(d => `<th>${d}</th>`).join("")}</tr>`;
 
     for (let aula = 1; aula <= turnos[turma.turno]; aula++) {
       html += `<tr><td>${aula}ª</td>`;
-
       diasSemana.forEach(dia => {
-        const slot = banco.horarios[turma.nome]
-          .find(s => s.dia === dia && s.aula === aula);
-
+        const slot = banco.horarios[turma.nome].find(s => s.dia === dia && s.aula === aula);
         html += `
-          <td class="clicavel"
-              data-professor="${slot?.professor || ""}"
+          <td class="clicavel" data-professor="${slot?.professor || ""}"
               onclick="destacarProfessor(this)">
-            ${slot?.disciplina || ""}
-            <br>
-            <small>${slot?.professor || ""}</small>
+            ${slot?.disciplina || ""}<br><small>${slot?.professor || ""}</small>
           </td>`;
       });
-
       html += `</tr>`;
     }
-
     html += `</table>`;
     container.innerHTML += html;
   });
 }
 
 // ===================================================
-// DESTAQUES MULTI-PROFESSOR (16 CORES)
+// DESTAQUES (16 CORES)
 // ===================================================
-const CORES_DESTAQUE = [
-  "destaque-0","destaque-1","destaque-2","destaque-3",
-  "destaque-4","destaque-5","destaque-6","destaque-7",
-  "destaque-8","destaque-9","destaque-10","destaque-11",
-  "destaque-12","destaque-13","destaque-14","destaque-15"
-];
-
+const CORES_DESTAQUE = Array.from({ length: 16 }, (_, i) => `destaque-${i}`);
 let destaquesAtivos = {};
 
 function destacarProfessor(celula) {
@@ -429,22 +501,17 @@ function destacarProfessor(celula) {
     return;
   }
 
-  const cor = CORES_DESTAQUE.find(
-    c => !Object.values(destaquesAtivos).includes(c)
-  );
-
+  const cor = CORES_DESTAQUE.find(c => !Object.values(destaquesAtivos).includes(c));
   if (!cor) return alert("Limite de destaques.");
 
   destaquesAtivos[prof] = cor;
-  document
-    .querySelectorAll(`td[data-professor="${prof}"]`)
+  document.querySelectorAll(`td[data-professor="${prof}"]`)
     .forEach(td => td.classList.add(cor, "destaque-borda"));
 }
 
 function removerDestaque(prof) {
   const cor = destaquesAtivos[prof];
-  document
-    .querySelectorAll(`td[data-professor="${prof}"]`)
+  document.querySelectorAll(`td[data-professor="${prof}"]`)
     .forEach(td => td.classList.remove(cor, "destaque-borda"));
   delete destaquesAtivos[prof];
 }
@@ -453,14 +520,24 @@ function removerDestaque(prof) {
 // INTERFACE
 // ===================================================
 function atualizarSelects() {
-  el("disc-turma").innerHTML = banco.turmas
-    .map(t => `<option>${t.nome}</option>`)
-    .join("");
+  // select de disciplinas
+  el("disc-turma").innerHTML =
+    banco.turmas.map(t => `<option>${t.nome}</option>`).join("");
 
-  el("disc-professor").innerHTML = banco.professores
-    .map(p => `<option>${p.nome}</option>`)
-    .join("");
+  el("disc-professor").innerHTML =
+    banco.professores.map(p => `<option>${p.nome}</option>`).join("");
+
+  // select de edição de professor
+  const selEdit = el("prof-editar");
+  if (selEdit) {
+    selEdit.innerHTML =
+      `<option value="">-- Novo professor --</option>` +
+      banco.professores
+        .map(p => `<option value="${p.nome}">${p.nome}</option>`)
+        .join("");
+  }
 }
+
 
 function limparDados() {
   localStorage.clear();
@@ -470,8 +547,32 @@ function limparDados() {
 // ===================================================
 // INIT
 // ===================================================
+
+function normalizarRestricoes() {
+  banco.professores.forEach(p => {
+    const r = p.restricoes?.aulasProibidas;
+
+    // formato antigo → novo
+    if (Array.isArray(r)) {
+      p.restricoes.aulasProibidas = {
+        M: [...r],
+        V: [...r]
+      };
+    }
+
+    // formato parcial
+    if (!p.restricoes.aulasProibidas.M)
+      p.restricoes.aulasProibidas.M = [];
+
+    if (!p.restricoes.aulasProibidas.V)
+      p.restricoes.aulasProibidas.V = [];
+  });
+}
+
+
 window.onload = () => {
   carregar();
+  normalizarRestricoes();
   atualizarSelects();
   atualizarMedidor();
 };

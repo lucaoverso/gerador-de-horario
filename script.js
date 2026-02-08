@@ -447,6 +447,61 @@ function inicializarHorarios() {
   });
 }
 
+function prepararHorarioVazio() {
+  // 1. cria TODOS os slots vazios
+  inicializarHorarios();
+
+  // 2. limpa listas
+  aulasNaoAlocadas = [];
+  relatorioFalhas = [];
+
+  // 3. transforma disciplinas em aulas pendentes
+  banco.turmas.forEach(turma => {
+    turma.disciplinas.forEach(disc => {
+      if (!disc.professor) return;
+
+      aulasNaoAlocadas.push({
+        turma: turma.nome,
+        disciplina: disc.nome,
+        professor: disc.professor,
+        faltam: disc.aulas
+      });
+    });
+  });
+
+  salvar();
+  mostrarTodosHorarios();
+  renderizarAulasNaoAlocadas();
+}
+
+function recalcularAulasNaoAlocadas() {
+  aulasNaoAlocadas = [];
+
+  banco.turmas.forEach(turma => {
+    turma.disciplinas.forEach(disc => {
+      if (!disc.professor) return;
+
+      const alocadas = banco.horarios[turma.nome].filter(s =>
+        s.disciplina === disc.nome &&
+        s.professor === disc.professor
+      ).length;
+
+      const faltam = disc.aulas - alocadas;
+
+      if (faltam > 0) {
+        aulasNaoAlocadas.push({
+          turma: turma.nome,
+          disciplina: disc.nome,
+          professor: disc.professor,
+          faltam
+        });
+      }
+    });
+  });
+}
+
+
+
 function inicializarHorariosIncremental() {
   // se não existe OU se não tem esta turma, inicializa tudo
   if (
@@ -483,8 +538,9 @@ function inicializarHorariosIncremental() {
 
 
 function slotDisponivel(slot) {
-  return !slot.professor && slot.fixo !== true;
+  return !slot.professor && !slot.fixo;
 }
+
 
 // ===================================================
 // REGRAS
@@ -650,7 +706,12 @@ function obterCandidatos(turma, professor, disc, nivel, modo) {
 
 function tentarGerarComNivel(nivel, seedBase) {
   setSeed(seedBase);
-  inicializarHorarios();
+
+  // 🔒 só inicializa se NÃO houver horários ainda
+  if (!banco.horarios || Object.keys(banco.horarios).length === 0) {
+    inicializarHorarios();
+  }
+
 
   for (const turma of banco.turmas) {
 
@@ -674,6 +735,10 @@ function tentarGerarComNivel(nivel, seedBase) {
       }
 
       const professor = banco.professores.find(p => p.nome === disc.professor);
+      const aulasJaFixas = banco.horarios[turma.nome].filter(s =>
+        s.disciplina === disc.nome &&
+        s.professor === professor.nome
+      ).length;
 
       // 🔒 professor inexistente
       if (!professor) {
@@ -686,8 +751,10 @@ function tentarGerarComNivel(nivel, seedBase) {
         continue;
       }
 
-      const blocos = Math.floor(disc.aulas / disc.agrupamento);
-      let aulasAlocadas = 0;
+      const aulasRestantes = disc.aulas - aulasJaFixas;
+      const blocos = Math.floor(aulasRestantes / disc.agrupamento);
+      let aulasAlocadas = aulasJaFixas;
+
       if (disc.aulas % disc.agrupamento !== 0) {
         registrarFalha({
           turma: turma.nome,
@@ -772,7 +839,6 @@ function tentarGerarComNivel(nivel, seedBase) {
             break;
           }
 
-
           aulasAlocadas += disc.agrupamento;;
           alocado = true;
           break;
@@ -838,9 +904,12 @@ function gerarHorario() {
     return;
   }
 
+  recalcularAulasNaoAlocadas();
+
   salvar();
   mostrarTodosHorarios();
   renderizarAulasNaoAlocadas();
+
   mostrarRelatorioGeracao();
   mostrarRelatorioFalhas();
 
@@ -1248,6 +1317,8 @@ function aplicarDrop(aula, turma, dia, aulaNum) {
 
   slot.disciplina = aula.disciplina;
   slot.professor = aula.professor;
+  slot.fixo = true;
+
 }
 
 let arrastando = false;

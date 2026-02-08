@@ -66,6 +66,20 @@ function carregar() {
 // ===================================================
 // UTILITÁRIOS
 // ===================================================
+let relatorioFalhas = [];
+
+function registrarFalha({ turma, disciplina, professor, motivo }) {
+  relatorioFalhas.push({
+    turma,
+    disciplina,
+    professor,
+    motivo
+  });
+}
+
+
+
+
 function el(id) {
   return document.getElementById(id);
 }
@@ -76,6 +90,156 @@ function embaralhar(arr) {
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
+}
+
+function lerCSV(file, callback) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const linhas = e.target.result
+      .split("\n")
+      .map(l => l.trim())
+      .filter(l => l.length > 0);
+
+    const cabecalho = linhas[0].split(",").map(c => c.trim());
+    const dados = linhas.slice(1).map(linha => {
+      const valores = linha.split(",").map(v => v.trim());
+      const obj = {};
+      cabecalho.forEach((c, i) => obj[c] = valores[i] || "");
+      return obj;
+    });
+
+    callback(dados);
+  };
+  reader.readAsText(file);
+}
+
+function importarTurmasCSV(file) {
+  lerCSV(file, dados => {
+    banco.turmas = dados.map(l => ({
+      nome: l.turma,
+      turno: l.turno,
+      disciplinas: []
+    }));
+
+    salvar();
+    atualizarSelects();
+    alert("Turmas importadas com sucesso.");
+  });
+}
+
+function importarProfessoresCSV(file) {
+  lerCSV(file, dados => {
+    banco.professores = dados.map(l => ({
+      nome: l.nome,
+      dias: l.dias
+        .split(";")
+        .map(d => d.trim())
+        .filter(d => d.length > 0),
+      restricoes: {
+        aulasProibidas: {
+          M: l.proibidas_M ? l.proibidas_M.split(";").map(Number) : [],
+          V: l.proibidas_V ? l.proibidas_V.split(";").map(Number) : [],
+          I: l.proibidas_I ? l.proibidas_I.split(";").map(Number) : [],
+          EMR: l.proibidas_EMR ? l.proibidas_EMR.split(";").map(Number) : []
+        }
+      },
+      preferencias: {
+        aulasPreferidas: l.preferencias
+          ? l.preferencias
+            .split(";")
+            .map(p => Number(p.trim()))
+            .filter(n => !isNaN(n))
+          : [],
+        pesoPreferencia: 10
+      }
+
+    }));
+
+    salvar();
+    atualizarSelects();
+    atualizarMedidor();
+    alert("Professores importados com sucesso.");
+  });
+}
+
+function importarDisciplinasCSV(file) {
+  lerCSV(file, dados => {
+    dados.forEach(l => {
+      const turma = banco.turmas.find(t => t.nome === l.turma);
+      if (!turma) return;
+
+      turma.disciplinas.push({
+        nome: l.disciplina,
+        aulas: Number(l.aulas),
+        professor: null,
+
+        // número máximo de aulas seguidas
+        agrupamento: Number(l.agrupamento || 1),
+
+        // controle pedagógico de sequência
+        permiteSequencia: String(l.permite_sequencia || "")
+          .toLowerCase()
+          .trim()
+          .match(/^(true|1|sim|yes)$/) !== null
+      });
+
+    });
+
+    salvar();
+    alert("Disciplinas importadas.");
+  });
+}
+
+function importarVinculosCSV(file) {
+  lerCSV(file, dados => {
+    dados.forEach(l => {
+      const turma = banco.turmas.find(t => t.nome === l.turma);
+      if (!turma) return;
+
+      const disciplinas = l.disciplina
+        .split(";")
+        .map(d => d.trim())
+        .filter(d => d.length > 0);
+
+      disciplinas.forEach(nomeDisc => {
+        const disc = turma.disciplinas.find(d => d.nome === nomeDisc);
+        if (!disc) return;
+
+        disc.professor = l.professor;
+      });
+    });
+
+    salvar();
+    alert("Vínculos aplicados com sucesso.");
+  });
+}
+
+
+function importarCSV(tipo, input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  if (tipo === "turmas") importarTurmasCSV(file);
+  if (tipo === "professores") importarProfessoresCSV(file);
+  if (tipo === "disciplinas") importarDisciplinasCSV(file);
+  if (tipo === "vinculos") importarVinculosCSV(file);
+
+  input.value = "";
+}
+
+function validarCargaTurma(turma) {
+  const total = turma.disciplinas.reduce(
+    (s, d) => s + d.aulas,
+    0
+  );
+
+  const capacidade = diasSemana.length * turnos[turma.turno];
+
+  return {
+    total,
+    capacidade,
+    ok: total <= capacidade
+  };
 }
 
 // ===================================================
@@ -229,9 +393,10 @@ function calcularCargaProfessor(nome) {
 }
 
 function diasMinimosRecomendados(total) {
-  if (total <= 2) return 2;
-  if (total <= 4) return 4;
-  return 5;
+  if (total >= 32) return 4;
+  if (total >= 16) return 3;
+  if (total <= 5) return 1;
+  return 1
 }
 
 function atualizarMedidor() {
@@ -331,6 +496,15 @@ function professorLivre(nome, dia, faixa) {
   );
 }
 
+function disciplinaJaNoDia(turma, dia, disciplina) {
+  return banco.horarios[turma]
+    .some(s =>
+      s.dia === dia &&
+      s.disciplina === disciplina
+    );
+}
+
+
 
 function aulaPermitidaPorNivel(professor, aula, turno, nivel) {
   if (nivel !== 1) return true;
@@ -350,115 +524,274 @@ function contarAulasNoDia(nome, turma, dia) {
 // ===================================================
 // HEURÍSTICA
 // ===================================================
-function pontuacaoSlotPorNivel(slot, professor, turma, nivel) {
+function pontuacaoSlotPorNivel(slot, professor, turma, nivel, disciplina) {
   let score = 0;
-  if (nivel === 1 &&
-    professor.preferencias?.aulasPreferidas?.includes(slot.aula))
-    score += professor.preferencias.pesoPreferencia || 1;
 
+  // ⭐ preferência de aula
+  if (
+    nivel === 1 &&
+    professor.preferencias?.aulasPreferidas?.includes(slot.aula)
+  ) {
+    score += professor.preferencias.pesoPreferencia || 1;
+  }
+
+  // 🔁 penaliza repetir disciplina no mesmo dia
+  if (
+    !professor.preferencias?.permiteSequencia &&
+    disciplinaJaNoDia(turma, slot.dia, disciplina)
+  ) {
+    score -= 5; // penalidade forte
+  }
+
+  // 📉 evita concentrar aulas do mesmo professor no dia
   score -= contarAulasNoDia(professor.nome, turma, slot.dia);
+
+  // 🎲 desempate aleatório leve
   score += random() * 0.1;
+
   return score;
 }
+
+
+function filtrarPorPreferencia(candidatos, professor, nivel) {
+  const prefs = professor.preferencias?.aulasPreferidas;
+
+  // se não há preferências, retorna tudo
+  if (!prefs || prefs.length === 0) return candidatos;
+
+  // nível estrito: preferência é quase obrigatória
+  if (nivel === 1) {
+    const preferenciais = candidatos.filter(s =>
+      prefs.includes(s.aula)
+    );
+
+    // se existir pelo menos um slot preferencial, usa SÓ eles
+    if (preferenciais.length > 0) {
+      return preferenciais;
+    }
+  }
+
+  // níveis mais flexíveis: retorna tudo
+  return candidatos;
+}
+
+
+// ===================================================
+// PESO DE RESTRIÇÃO DO PROFESSOR
+// ===================================================
+function pesoRestricaoProfessor(professor) {
+  // 🔒 BLINDAGEM ABSOLUTA
+  if (!professor) return 9999;
+  // professor inexistente = extremamente restrito
+
+  const dias = professor.dias?.length || 0;
+
+  const proibidasM = professor.restricoes?.aulasProibidas?.M?.length || 0;
+  const proibidasV = professor.restricoes?.aulasProibidas?.V?.length || 0;
+  const proibidasI = professor.restricoes?.aulasProibidas?.I?.length || 0;
+  const proibidasEMR = professor.restricoes?.aulasProibidas?.EMR?.length || 0;
+
+  const totalProibidas =
+    proibidasM + proibidasV + proibidasI + proibidasEMR;
+
+  const carga = calcularCargaProfessor(professor.nome);
+
+  // peso maior = MAIS difícil de alocar
+  return (
+    (10 - dias) * 5 +     // poucos dias pesa muito
+    totalProibidas * 3 +  // muitas aulas proibidas
+    carga * 0.5           // carga alta
+  );
+}
+
+
+
 
 // ===================================================
 // GERAÇÃO (COM INCREMENTAL)
 // ===================================================
+
+function obterCandidatos(turma, professor, disc, nivel, modo) {
+  let candidatos = banco.horarios[turma.nome].filter(s =>
+    slotDisponivel(s) &&
+    professor.dias.includes(s.dia)
+  );
+
+  // MODO 1 — regras completas
+  if (modo === 1) {
+    candidatos = candidatos.filter(s =>
+      aulaPermitidaPorNivel(professor, s.aula, turma.turno, nivel)
+    );
+
+    if (!disc.permiteSequencia) {
+      candidatos = candidatos.filter(s =>
+        !disciplinaJaNoDia(turma.nome, s.dia, disc.nome)
+      );
+    }
+
+    candidatos = filtrarPorPreferencia(candidatos, professor, nivel);
+  }
+
+  // MODO 2 — ignora preferência
+  if (modo === 2) {
+    if (!disc.permiteSequencia) {
+      candidatos = candidatos.filter(s =>
+        !disciplinaJaNoDia(turma.nome, s.dia, disc.nome)
+      );
+    }
+  }
+
+  // MODO 3 — só regras duras
+  return candidatos;
+}
+
+
+
 function tentarGerarComNivel(nivel, seedBase) {
-  const MAX_TENTATIVAS = 10000;
+  setSeed(seedBase);
+  inicializarHorarios();
 
-  for (let tentativa = 1; tentativa <= MAX_TENTATIVAS; tentativa++) {
-    try {
-      setSeed(seedBase + tentativa);
-      inicializarHorarios();
+  for (const turma of banco.turmas) {
 
-      for (const turma of banco.turmas) {
-        const disciplinasOrdenadas = [...turma.disciplinas].sort((a, b) => {
-          const pa = banco.professores.find(p => p.nome === a.professor);
-          const pb = banco.professores.find(p => p.nome === b.professor);
+    const disciplinasOrdenadas = [...turma.disciplinas].sort((a, b) => {
+      const pa = banco.professores.find(p => p.nome === a.professor) || null;
+      const pb = banco.professores.find(p => p.nome === b.professor) || null;
+      return pesoRestricaoProfessor(pb) - pesoRestricaoProfessor(pa);
+    });
 
-          // professores com MENOS dias disponíveis vêm primeiro
-          return pa.dias.length - pb.dias.length;
+    for (const disc of disciplinasOrdenadas) {
+
+      // 🔒 validações básicas
+      if (!disc.professor) {
+        registrarFalha({
+          turma: turma.nome,
+          disciplina: disc.nome,
+          professor: "NÃO DEFINIDO",
+          motivo: "Disciplina sem professor vinculado"
         });
+        continue;
+      }
 
-        for (const disc of disciplinasOrdenadas) {
-          const professor = banco.professores.find(p => p.nome === disc.professor);
-          const blocos = disc.aulas / disc.agrupamento;
+      const professor = banco.professores.find(p => p.nome === disc.professor);
+      if (!professor) {
+        registrarFalha({
+          turma: turma.nome,
+          disciplina: disc.nome,
+          professor: disc.professor,
+          motivo: "Professor não cadastrado no sistema"
+        });
+        continue;
+      }
 
-          let ja = banco.horarios[turma.nome]
-            .filter(s => s.professor === professor.nome && s.disciplina === disc.nome)
-            .length / disc.agrupamento;
+      const blocos = disc.aulas / disc.agrupamento;
+      let blocosAlocados = 0;
 
-          for (let b = ja; b < blocos; b++) {
-            let candidatos = banco.horarios[turma.nome]
-              .filter(s =>
-                slotDisponivel(s) &&
-                professor.dias.includes(s.dia) &&
-                aulaPermitidaPorNivel(
-                  professor,
-                  s.aula,
-                  turma.turno,
-                  nivel
-                )
-              );
+      // 🔁 LOOP ÚNICO DE ALOCAÇÃO (CORRIGIDO)
+      for (let b = 0; b < blocos; b++) {
 
-            if (candidatos.length === 0 && nivel === 1) {
-              // tenta ignorar aulas proibidas localmente
-              candidatos = banco.horarios[turma.nome]
-                .filter(s =>
-                  slotDisponivel(s) &&
-                  professor.dias.includes(s.dia)
-                );
-            }
+        let candidatos = [];
 
+        // retry local progressivo
+        for (let modo = 1; modo <= 3 && candidatos.length === 0; modo++) {
+          candidatos = obterCandidatos(turma, professor, disc, nivel, modo);
+        }
 
-            candidatos = embaralhar(candidatos);
-            candidatos.sort((a, b) =>
-              pontuacaoSlotPorNivel(b, professor, turma.nome, nivel) -
-              pontuacaoSlotPorNivel(a, professor, turma.nome, nivel)
-            );
+        if (candidatos.length === 0) {
+          continue;
+        }
 
-            let alocado = false;
+        candidatos = embaralhar(candidatos);
 
-            for (const slot of candidatos) {
-              let conflito = false;
-              for (let i = 0; i < disc.agrupamento; i++) {
-                if (!professorLivre(
-                  professor.nome,
-                  slot.dia,
-                  faixaGlobal(turma.turno, slot.aula + i))) {
-                  conflito = true; break;
-                }
-              }
-              if (conflito) continue;
+        candidatos.sort((a, b) =>
+          pontuacaoSlotPorNivel(
+            b,
+            professor,
+            turma.nome,
+            nivel,
+            disc.nome
+          ) -
+          pontuacaoSlotPorNivel(
+            a,
+            professor,
+            turma.nome,
+            nivel,
+            disc.nome
+          )
+        );
 
-              for (let i = 0; i < disc.agrupamento; i++) {
-                const s = banco.horarios[turma.nome]
-                  .find(x => x.dia === slot.dia && x.aula === slot.aula + i);
-                s.professor = professor.nome;
-                s.disciplina = disc.nome;
-              }
+        let alocado = false;
 
-              alocado = true;
+        for (const slot of candidatos) {
+
+          let conflito = false;
+
+          for (let i = 0; i < disc.agrupamento; i++) {
+            if (!professorLivre(
+              professor.nome,
+              slot.dia,
+              faixaGlobal(turma.turno, slot.aula + i)
+            )) {
+              conflito = true;
               break;
             }
-            if (!alocado) throw "falha";
           }
+
+          if (conflito) continue;
+
+          // ✅ aloca o bloco
+          for (let i = 0; i < disc.agrupamento; i++) {
+            const s = banco.horarios[turma.nome]
+              .find(x => x.dia === slot.dia && x.aula === slot.aula + i);
+
+            if (s) {
+              s.professor = professor.nome;
+              s.disciplina = disc.nome;
+            }
+          }
+
+          blocosAlocados++;
+          alocado = true;
+          break;
+        }
+
+        if (!alocado) {
+          continue;
         }
       }
-      return true;
-    } catch { }
+
+      // 📊 relatório final da disciplina
+      if (blocosAlocados < blocos) {
+        registrarFalha({
+          turma: turma.nome,
+          disciplina: disc.nome,
+          professor: professor.nome,
+          motivo: `Apenas ${blocosAlocados * disc.agrupamento}/${disc.aulas} aulas alocadas`
+        });
+      }
+    }
   }
-  return false;
+
+  return true;
 }
 
 // ===================================================
 // GERADOR PRINCIPAL
 // ===================================================
 function gerarHorario() {
+  relatorioFalhas = [];
   relatorioGeracao = { nivelUsado: null, ajustes: [] };
   const seedBase = banco.seedBase || Number(el("seed")?.value || Date.now());
   banco.seedBase = seedBase;
+  for (const turma of banco.turmas) {
+    const v = validarCargaTurma(turma);
+    if (!v.ok) {
+      alert(
+        `Turma ${turma.nome} inviável:\n` +
+        `Aulas: ${v.total} / Capacidade: ${v.capacidade}`
+      );
+      return;
+    }
+  }
 
   if (tentarGerarComNivel(1, seedBase)) {
     relatorioGeracao.nivelUsado = "Estrito";
@@ -474,6 +807,8 @@ function gerarHorario() {
   salvar();
   mostrarTodosHorarios();
   mostrarRelatorioGeracao();
+  mostrarRelatorioFalhas();
+
 }
 
 function gerarComNovaSeed() {
@@ -611,6 +946,26 @@ function normalizarRestricoes() {
       p.restricoes.aulasProibidas.V = [];
   });
 }
+
+function mostrarRelatorioFalhas() {
+  if (relatorioFalhas.length === 0) {
+    alert("Horário gerado com sucesso, sem falhas 🎉");
+    return;
+  }
+
+  let texto = "⚠️ Horário gerado com pendências:\n\n";
+
+  relatorioFalhas.forEach(f => {
+    texto +=
+      `Turma: ${f.turma}\n` +
+      `Disciplina: ${f.disciplina}\n` +
+      `Professor: ${f.professor}\n` +
+      `Motivo: ${f.motivo}\n\n`;
+  });
+
+  alert(texto);
+}
+
 
 
 window.onload = () => {

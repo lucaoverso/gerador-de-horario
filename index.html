@@ -49,7 +49,7 @@
       </label>
     </fieldset>
 
-     <fieldset>
+    <fieldset>
       <legend>Integral (I)</legend>
       <label>
         Aulas que NÃO pode pegar (ex: 1,5)
@@ -64,6 +64,30 @@
         <input id="prof-proibidas-emr" placeholder="1,5">
       </label>
     </fieldset>
+
+    <h3>Importar Dados</h3>
+    <h2>Importar dados (CSV)</h2>
+
+    <label>
+      Turmas
+      <input type="file" accept=".csv" onchange="importarCSV('turmas', this)">
+    </label> <br>
+
+    <label>
+      Professores
+      <input type="file" accept=".csv" onchange="importarCSV('professores', this)">
+    </label> <br>
+
+    <label>
+      Disciplinas
+      <input type="file" accept=".csv" onchange="importarCSV('disciplinas', this)">
+    </label> <br>
+
+    <label>
+      Vínculos
+      <input type="file" accept=".csv" onchange="importarCSV('vinculos', this)">
+    </label>
+
 
 
     <h4>Preferências</h4>

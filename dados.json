@@ -1,1 +1,594 @@
-horarioEscolar:"{"professores":[{"nome":"Keli","dias":["Seg","Ter"],"restricoes":{"aulasProibidas":[0]},"preferencias":{"aulasPreferidas":[0],"pesoPreferencia":2}},{"nome":"Pamela","dias":["Seg","Ter","Qua","Sex"],"restricoes":{"aulasProibidas":[1]},"preferencias":{"aulasPreferidas":[2,3,4,5],"pesoPreferencia":2}}],"turmas":[{"nome":"6 A","turno":"I","disciplinas":[{"nome":"Literatura, Arte e Movimento","aulas":2,"professor":"Keli","agrupamento":1},{"nome":"História","aulas":3,"professor":"Pamela","agrupamento":1}]},{"nome":"7 A","turno":"I","disciplinas":[{"nome":"Literatura, Arte e Movimento","aulas":2,"professor":"Keli","agrupamento":1},{"nome":"História","aulas":3,"professor":"Pamela","agrupamento":1}]},{"nome":"8 A","turno":"I","disciplinas":[{"nome":"Literatura, Arte e Movimento","aulas":2,"professor":"Keli","agrupamento":1},{"nome":"História","aulas":3,"professor":"Pamela","agrupamento":1}]},{"nome":"9 A","turno":"M","disciplinas":[{"nome":"Literatura, Arte e Movimento","aulas":2,"professor":"Keli","agrupamento":1},{"nome":"História","aulas":2,"professor":"Pamela","agrupamento":1}]},{"nome":"1 EM A","turno":"I","disciplinas":[{"nome":"Arte","aulas":1,"professor":"Keli","agrupamento":1},{"nome":"História","aulas":2,"professor":"Pamela","agrupamento":1}]},{"nome":"2 EM A","turno":"I","disciplinas":[{"nome":"Arte","aulas":1,"professor":"Keli","agrupamento":1},{"nome":"História","aulas":2,"professor":"Pamela","agrupamento":1}]},{"nome":"3 EM A","turno":"I","disciplinas":[{"nome":"Arte","aulas":1,"professor":"Keli","agrupamento":1},{"nome":"História","aulas":2,"professor":"Pamela","agrupamento":1}]},{"nome":"6 B","turno":"V","disciplinas":[]},{"nome":"7 B","turno":"V","disciplinas":[]},{"nome":"8 B","turno":"V","disciplinas":[]},{"nome":"9 B","turno":"V","disciplinas":[]},{"nome":"1 EM B","turno":"EMR","disciplinas":[]},{"nome":"2 EM B","turno":"EMR","disciplinas":[]},{"nome":"3 EM B","turno":"EMR","disciplinas":[]}],"horarios":{"6 A":[{"dia":"Seg","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":4,"disciplina":"História","professor":"Pamela","fixo":false},{"dia":"Seg","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":8,"disciplina":"Literatura, Arte e Movimento","professor":"Keli","fixo":true},{"dia":"Ter","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":4,"disciplina":"História","professor":"Pamela","fixo":false},{"dia":"Ter","aula":5,"disciplina":"Literatura, Arte e Movimento","professor":"Keli","fixo":true},{"dia":"Ter","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":5,"disciplina":"História","professor":"Pamela","fixo":false},{"dia":"Qua","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":8,"disciplina":null,"professor":null,"fixo":false}],"7 A":[{"dia":"Seg","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":3,"disciplina":"História","professor":"Pamela","fixo":false},{"dia":"Seg","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":6,"disciplina":"Literatura, Arte e Movimento","professor":"Keli","fixo":true},{"dia":"Seg","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":8,"disciplina":"Literatura, Arte e Movimento","professor":"Keli","fixo":true},{"dia":"Qua","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":4,"disciplina":"História","professor":"Pamela","fixo":false},{"dia":"Qua","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":2,"disciplina":"História","professor":"Pamela","fixo":false},{"dia":"Sex","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":8,"disciplina":null,"professor":null,"fixo":false}],"8 A":[{"dia":"Seg","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":2,"disciplina":"Literatura, Arte e Movimento","professor":"Keli","fixo":true},{"dia":"Seg","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":2,"disciplina":"Literatura, Arte e Movimento","professor":"Keli","fixo":true},{"dia":"Ter","aula":3,"disciplina":"História","professor":"Pamela","fixo":false},{"dia":"Ter","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":3,"disciplina":"História","professor":"Pamela","fixo":false},{"dia":"Qua","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":4,"disciplina":"História","professor":"Pamela","fixo":false},{"dia":"Sex","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":8,"disciplina":null,"professor":null,"fixo":false}],"9 A":[{"dia":"Seg","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":5,"disciplina":"Literatura, Arte e Movimento","professor":"Keli","fixo":true},{"dia":"Ter","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":2,"disciplina":"História","professor":"Pamela","fixo":false},{"dia":"Ter","aula":3,"disciplina":"Literatura, Arte e Movimento","professor":"Keli","fixo":true},{"dia":"Ter","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":2,"disciplina":"História","professor":"Pamela","fixo":false},{"dia":"Qua","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":5,"disciplina":null,"professor":null,"fixo":false}],"1 EM A":[{"dia":"Seg","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":5,"disciplina":"História","professor":"Pamela","fixo":false},{"dia":"Seg","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":6,"disciplina":"Arte","professor":"Keli","fixo":true},{"dia":"Ter","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":3,"disciplina":"História","professor":"Pamela","fixo":false},{"dia":"Sex","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":8,"disciplina":null,"professor":null,"fixo":false}],"2 EM A":[{"dia":"Seg","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":2,"disciplina":"História","professor":"Pamela","fixo":false},{"dia":"Seg","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":1,"disciplina":"Arte","professor":"Keli","fixo":true},{"dia":"Ter","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":5,"disciplina":"História","professor":"Pamela","fixo":false},{"dia":"Sex","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":8,"disciplina":null,"professor":null,"fixo":false}],"3 EM A":[{"dia":"Seg","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":4,"disciplina":"Arte","professor":"Keli","fixo":true},{"dia":"Ter","aula":5,"disciplina":"História","professor":"Pamela","fixo":false},{"dia":"Ter","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":7,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":8,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":7,"disciplina":"História","professor":"Pamela","fixo":false},{"dia":"Sex","aula":8,"disciplina":null,"professor":null,"fixo":false}],"6 B":[{"dia":"Seg","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":5,"disciplina":null,"professor":null,"fixo":false}],"7 B":[{"dia":"Seg","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":5,"disciplina":null,"professor":null,"fixo":false}],"8 B":[{"dia":"Seg","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":5,"disciplina":null,"professor":null,"fixo":false}],"9 B":[{"dia":"Seg","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":5,"disciplina":null,"professor":null,"fixo":false}],"1 EM B":[{"dia":"Seg","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":6,"disciplina":null,"professor":null,"fixo":false}],"2 EM B":[{"dia":"Seg","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":6,"disciplina":null,"professor":null,"fixo":false}],"3 EM B":[{"dia":"Seg","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Seg","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Ter","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qua","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Qui","aula":6,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":1,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":2,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":3,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":4,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":5,"disciplina":null,"professor":null,"fixo":false},{"dia":"Sex","aula":6,"disciplina":null,"professor":null,"fixo":false}]},"seedBase":1770312572737}"
+{
+    "professores": [
+        {
+            "nome": "Keli",
+            "dias": [
+                "Seg",
+                "Ter"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [],
+                    "V": [],
+                    "I": [],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Pamela",
+            "dias": [
+                "Seg",
+                "Ter",
+                "Qua",
+                "Sex"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [
+                        1
+                    ],
+                    "V": [],
+                    "I": [
+                        1
+                    ],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Charneuma",
+            "dias": [
+                "Seg",
+                "Ter",
+                "Qui",
+                "Sex"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [
+                        1
+                    ],
+                    "V": [],
+                    "I": [
+                        1
+                    ],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Marvely",
+            "dias": [
+                "Ter",
+                "Qua",
+                "Qui",
+                "Sex"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [
+                        1
+                    ],
+                    "V": [],
+                    "I": [
+                        1
+                    ],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Iara",
+            "dias": [
+                "Seg",
+                "Ter",
+                "Sex"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [],
+                    "V": [
+                        1
+                    ],
+                    "I": [],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Edivo",
+            "dias": [
+                "Seg",
+                "Ter",
+                "Qua",
+                "Qui"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [],
+                    "V": [
+                        1
+                    ],
+                    "I": [],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Pedro",
+            "dias": [
+                "Ter",
+                "Qua",
+                "Qui",
+                "Sex"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [
+                        1
+                    ],
+                    "V": [],
+                    "I": [
+                        1
+                    ],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Rogério",
+            "dias": [
+                "Seg"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [],
+                    "V": [],
+                    "I": [],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Patrícia Gabrieli",
+            "dias": [
+                "Seg",
+                "Qua"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [],
+                    "V": [],
+                    "I": [],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Izabela",
+            "dias": [
+                "Ter",
+                "Qua",
+                "Qui",
+                "Sex"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [],
+                    "V": [],
+                    "I": [],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Paulo Mallan",
+            "dias": [
+                "\"Seg"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [
+                        null
+                    ],
+                    "V": [
+                        null
+                    ],
+                    "I": [
+                        null
+                    ],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Neila Regina",
+            "dias": [
+                "Ter",
+                "Qua"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [],
+                    "V": [],
+                    "I": [],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Beatriz",
+            "dias": [
+                "Ter",
+                "Qua"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [],
+                    "V": [],
+                    "I": [],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Andrielly",
+            "dias": [
+                "Seg",
+                "Ter",
+                "Qui"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [],
+                    "V": [],
+                    "I": [],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Kleber",
+            "dias": [
+                "Ter",
+                "Qua",
+                "Qui",
+                "Sex"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [],
+                    "V": [],
+                    "I": [],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Alex",
+            "dias": [
+                "Qua",
+                "Qui",
+                "Sex"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [],
+                    "V": [],
+                    "I": [],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Janielly",
+            "dias": [
+                "Seg"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [],
+                    "V": [],
+                    "I": [],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Bruna Ribeiro",
+            "dias": [
+                "Seg",
+                "Ter",
+                "Qua",
+                "Qui"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [],
+                    "V": [],
+                    "I": [],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Simeide",
+            "dias": [
+                "Seg",
+                "Ter",
+                "Qua",
+                "Qui"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [],
+                    "V": [],
+                    "I": [],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Ingrid",
+            "dias": [
+                "Ter",
+                "Qua",
+                "Qui",
+                "Sex"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [],
+                    "V": [],
+                    "I": [
+                        1
+                    ],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Geovana",
+            "dias": [
+                "Seg",
+                "Ter",
+                "Qua"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [],
+                    "V": [],
+                    "I": [],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Ana Paula",
+            "dias": [
+                "Seg",
+                "Ter",
+                "Qui",
+                "Sex"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [],
+                    "V": [],
+                    "I": [],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Patrícia Mendonça",
+            "dias": [
+                "Seg",
+                "Ter",
+                "Qua"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [],
+                    "V": [],
+                    "I": [
+                        4,
+                        5,
+                        6,
+                        7,
+                        8
+                    ],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        },
+        {
+            "nome": "Bianca",
+            "dias": [
+                "Seg",
+                "Ter"
+            ],
+            "restricoes": {
+                "aulasProibidas": {
+                    "M": [],
+                    "V": [],
+                    "I": [
+                        1
+                    ],
+                    "EMR": []
+                }
+            },
+            "preferencias": {
+                "aulasPreferidas": [],
+                "pesoPreferencia": 2
+            }
+        }
+    ],
+    "turmas": [
+        {
+            "nome": "6A",
+            "turno": "I",
+            "disciplinas": []
+        },
+        {
+            "nome": "7A",
+            "turno": "I",
+            "disciplinas": []
+        },
+        {
+            "nome": "8A",
+            "turno": "I",
+            "disciplinas": []
+        },
+        {
+            "nome": "9A",
+            "turno": "M",
+            "disciplinas": []
+        },
+        {
+            "nome": "1 EM A",
+            "turno": "I",
+            "disciplinas": []
+        },
+        {
+            "nome": "2 EM A",
+            "turno": "I",
+            "disciplinas": []
+        },
+        {
+            "nome": "3 EM A",
+            "turno": "I",
+            "disciplinas": []
+        },
+        {
+            "nome": "6B",
+            "turno": "V",
+            "disciplinas": []
+        },
+        {
+            "nome": "7B",
+            "turno": "V",
+            "disciplinas": []
+        },
+        {
+            "nome": "8B",
+            "turno": "V",
+            "disciplinas": []
+        },
+        {
+            "nome": "9B",
+            "turno": "V",
+            "disciplinas": []
+        },
+        {
+            "nome": "1 EM B",
+            "turno": "EMR",
+            "disciplinas": []
+        },
+        {
+            "nome": "2 EM B",
+            "turno": "EMR",
+            "disciplinas": []
+        },
+        {
+            "nome": "3 EM B",
+            "turno": "EMR",
+            "disciplinas": []
+        }
+    ],
+    "horarios": {},
+    "seedBase": 1770467706707
+}

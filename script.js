@@ -66,6 +66,7 @@ function carregar() {
 // ===================================================
 // UTILITÁRIOS
 // ===================================================
+let aulasNaoAlocadas = [];
 let relatorioFalhas = [];
 
 function registrarFalha({ turma, disciplina, professor, motivo }) {
@@ -661,7 +662,7 @@ function tentarGerarComNivel(nivel, seedBase) {
 
     for (const disc of disciplinasOrdenadas) {
 
-      // 🔒 validações básicas
+      // 🔒 disciplina sem professor
       if (!disc.professor) {
         registrarFalha({
           turma: turma.nome,
@@ -673,6 +674,8 @@ function tentarGerarComNivel(nivel, seedBase) {
       }
 
       const professor = banco.professores.find(p => p.nome === disc.professor);
+
+      // 🔒 professor inexistente
       if (!professor) {
         registrarFalha({
           turma: turma.nome,
@@ -683,10 +686,19 @@ function tentarGerarComNivel(nivel, seedBase) {
         continue;
       }
 
-      const blocos = disc.aulas / disc.agrupamento;
-      let blocosAlocados = 0;
+      const blocos = Math.floor(disc.aulas / disc.agrupamento);
+      let aulasAlocadas = 0;
+      if (disc.aulas % disc.agrupamento !== 0) {
+        registrarFalha({
+          turma: turma.nome,
+          disciplina: disc.nome,
+          professor: professor.nome,
+          motivo: "Quantidade de aulas incompatível com o agrupamento"
+        });
+      }
 
-      // 🔁 LOOP ÚNICO DE ALOCAÇÃO (CORRIGIDO)
+
+      // 🔁 LOOP ÚNICO DE ALOCAÇÃO
       for (let b = 0; b < blocos; b++) {
 
         let candidatos = [];
@@ -696,9 +708,7 @@ function tentarGerarComNivel(nivel, seedBase) {
           candidatos = obterCandidatos(turma, professor, disc, nivel, modo);
         }
 
-        if (candidatos.length === 0) {
-          continue;
-        }
+        if (candidatos.length === 0) continue;
 
         candidatos = embaralhar(candidatos);
 
@@ -738,41 +748,65 @@ function tentarGerarComNivel(nivel, seedBase) {
 
           if (conflito) continue;
 
-          // ✅ aloca o bloco
+          // ✅ aloca bloco
+          let aulasRealmenteAlocadas = 0;
+
+          // tenta alocar aula por aula
           for (let i = 0; i < disc.agrupamento; i++) {
             const s = banco.horarios[turma.nome]
               .find(x => x.dia === slot.dia && x.aula === slot.aula + i);
 
-            if (s) {
+            if (s && !s.professor) {
               s.professor = professor.nome;
               s.disciplina = disc.nome;
+              aulasRealmenteAlocadas++;
+            } else {
+              break; // quebra sequência
             }
           }
 
-          blocosAlocados++;
+          // só conta o que realmente entrou
+          if (aulasRealmenteAlocadas > 0) {
+            aulasAlocadas += aulasRealmenteAlocadas;
+            alocado = true;
+            break;
+          }
+
+
+          aulasAlocadas += disc.agrupamento;;
           alocado = true;
           break;
         }
 
-        if (!alocado) {
-          continue;
-        }
+        if (!alocado) continue;
       }
 
-      // 📊 relatório final da disciplina
-      if (blocosAlocados < blocos) {
+      // 📊 relatório FINAL da disciplina (único e correto)
+      const faltam = disc.aulas - aulasAlocadas;
+
+      if (faltam > 0) {
+
+        aulasNaoAlocadas.push({
+          turma: turma.nome,
+          disciplina: disc.nome,
+          professor: professor.nome,
+          faltam
+        });
+
         registrarFalha({
           turma: turma.nome,
           disciplina: disc.nome,
           professor: professor.nome,
-          motivo: `Apenas ${blocosAlocados * disc.agrupamento}/${disc.aulas} aulas alocadas`
+          motivo: `Apenas ${aulasAlocadas}/${disc.aulas} aulas alocadas`
         });
       }
+
     }
   }
 
   return true;
 }
+
 
 // ===================================================
 // GERADOR PRINCIPAL
@@ -806,6 +840,7 @@ function gerarHorario() {
 
   salvar();
   mostrarTodosHorarios();
+  renderizarAulasNaoAlocadas();
   mostrarRelatorioGeracao();
   mostrarRelatorioFalhas();
 
@@ -851,11 +886,33 @@ function mostrarTodosHorarios() {
       html += `<tr><td>${aula}ª</td>`;
       diasSemana.forEach(dia => {
         const slot = banco.horarios[turma.nome].find(s => s.dia === dia && s.aula === aula);
-        html += `
-          <td class="clicavel" data-professor="${slot?.professor || ""}"
-              onclick="destacarProfessor(this)">
-            ${slot?.disciplina || ""}<br><small>${slot?.professor || ""}</small>
-          </td>`;
+        if (!slot?.disciplina) {
+          html += `
+    <td class="clicavel vazio"
+        data-turma="${turma.nome}"
+        data-dia="${dia}"
+        data-aula="${aula}"
+        ondragover="permitirDrop(event)"
+        ondrop="onDrop(event)">
+    </td>`;
+        } else {
+          html += `
+    <td class="clicavel alocada"
+    draggable="true"
+    data-turma="${turma.nome}"
+    data-dia="${dia}"
+    data-aula="${aula}"
+    data-disciplina="${slot.disciplina}"
+    data-professor="${slot.professor}"
+    ondragstart="onDragStartAlocada(event)"
+    ondragend="onDragEndAlocada()"
+    ondragover="permitirDrop(event)"
+    ondrop="onDrop(event)"
+    onclick="onClickCelula(event)">
+  ${slot.disciplina}<br><small>${slot.professor}</small>
+</td>
+`;
+        }
       });
       html += `</tr>`;
     }
@@ -897,6 +954,21 @@ function removerDestaque(prof) {
 // ===================================================
 // INTERFACE
 // ===================================================
+function onDragStartAlocada(e) {
+  const td = e.target;
+
+  const payload = {
+    tipo: "alocada",
+    turma: td.dataset.turma,
+    dia: td.dataset.dia,
+    aula: Number(td.dataset.aula),
+    disciplina: td.dataset.disciplina,
+    professor: td.dataset.professor
+  };
+
+  e.dataTransfer.setData("application/json", JSON.stringify(payload));
+}
+
 function atualizarSelects() {
   // select de disciplinas
   el("disc-turma").innerHTML =
@@ -964,6 +1036,248 @@ function mostrarRelatorioFalhas() {
   });
 
   alert(texto);
+}
+
+// ===================================================
+// INTERFACE
+// ===================================================
+function validarMovimento(aula, turmaDest, diaDest, aulaDest) {
+  const turma = banco.turmas.find(t => t.nome === turmaDest);
+  if (!turma) return false;
+
+  const professor = banco.professores.find(p => p.nome === aula.professor);
+  if (!professor) return false;
+
+  const faixa = faixaGlobal(turma.turno, aulaDest);
+
+  // regras duras
+  if (!professor.dias.includes(diaDest)) return false;
+  if (!professorLivre(professor.nome, diaDest, faixa)) return false;
+  if (!aulaPermitidaPorNivel(professor, aulaDest, turma.turno, 1)) return false;
+
+  const disc = turma.disciplinas.find(d => d.nome === aula.disciplina);
+  if (!disc) return false;
+
+  // regra pedagógica de sequência
+  if (
+    !disc.permiteSequencia &&
+    disciplinaJaNoDia(turmaDest, diaDest, disc.nome)
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
+
+function moverAulaAlocada(origem, turmaDest, diaDest, aulaDest) {
+
+  const turmaOrig = origem.turma;
+  const diaOrig = origem.dia;
+  const aulaOrig = origem.aula;
+
+  // mesmo lugar → ignora
+  if (
+    turmaOrig === turmaDest &&
+    diaOrig === diaDest &&
+    aulaOrig === aulaDest
+  ) return;
+
+  const slotOrig = banco.horarios[turmaOrig]
+    .find(s => s.dia === diaOrig && s.aula === aulaOrig);
+
+  const slotDest = banco.horarios[turmaDest]
+    .find(s => s.dia === diaDest && s.aula === aulaDest);
+
+  // valida destino
+  if (!validarMovimento(origem, turmaDest, diaDest, aulaDest)) {
+    alert("❌ Movimento inválido.");
+    return;
+  }
+
+  // TROCA ou MOVE
+  if (slotDest.disciplina) {
+    // troca
+    const tmp = {
+      disciplina: slotDest.disciplina,
+      professor: slotDest.professor
+    };
+
+    slotDest.disciplina = slotOrig.disciplina;
+    slotDest.professor = slotOrig.professor;
+
+    slotOrig.disciplina = tmp.disciplina;
+    slotOrig.professor = tmp.professor;
+  } else {
+    // move simples
+    slotDest.disciplina = slotOrig.disciplina;
+    slotDest.professor = slotOrig.professor;
+
+    slotOrig.disciplina = null;
+    slotOrig.professor = null;
+  }
+}
+
+
+function renderizarAulasNaoAlocadas() {
+  const painel = el("painel-nao-alocadas");
+  if (!painel) return;
+
+  painel.innerHTML = "";
+
+  let indiceGlobal = 0;
+
+  aulasNaoAlocadas.forEach((item) => {
+
+    // 🔁 CRIA UM BLOCO PARA CADA AULA REAL
+    for (let i = 0; i < item.faltam; i++) {
+
+      const div = document.createElement("div");
+      div.className = "bloco-aula";
+      div.draggable = true;
+
+      div.dataset.index = indiceGlobal;
+
+      div.innerHTML = `
+        <strong>${item.disciplina}</strong><br>
+        <small>${item.turma} • ${item.professor}</small>
+      `;
+
+      div.addEventListener("dragstart", (e) => {
+        e.dataTransfer.setData(
+          "application/json",
+          JSON.stringify({
+            tipo: "naoAlocada",
+            index: indiceGlobal,
+            turma: item.turma,
+            disciplina: item.disciplina,
+            professor: item.professor
+          })
+        );
+      });
+
+      painel.appendChild(div);
+      indiceGlobal++;
+    }
+  });
+}
+
+
+function onDragStart(e) {
+  e.dataTransfer.setData(
+    "application/json",
+    JSON.stringify({
+      tipo: "naoAlocada",
+      index: Number(e.target.dataset.index),
+      ...aulasNaoAlocadas[e.target.dataset.index]
+    })
+  );
+}
+
+function permitirDrop(e) {
+  e.preventDefault();
+}
+
+function onDrop(e) {
+  e.preventDefault();
+
+  const data = JSON.parse(e.dataTransfer.getData("application/json"));
+
+  const turmaDestino = e.target.dataset.turma;
+  const diaDestino = e.target.dataset.dia;
+  const aulaDestino = Number(e.target.dataset.aula);
+
+  if (data.tipo === "naoAlocada") {
+    // já implementado antes (mantém)
+    if (!validarDrop(data, turmaDestino, diaDestino, aulaDestino)) {
+      alert("❌ Movimento inválido.");
+      return;
+    }
+
+    aplicarDrop(data, turmaDestino, diaDestino, aulaDestino);
+    const item = aulasNaoAlocadas.find(a =>
+      a.turma === data.turma &&
+      a.disciplina === data.disciplina &&
+      a.professor === data.professor
+    );
+
+    if (item) {
+      item.faltam--;
+
+      if (item.faltam <= 0) {
+        aulasNaoAlocadas = aulasNaoAlocadas.filter(a => a !== item);
+      }
+    }
+
+  }
+
+  if (data.tipo === "alocada") {
+    moverAulaAlocada(data, turmaDestino, diaDestino, aulaDestino);
+  }
+
+  salvar();
+  mostrarTodosHorarios();
+  renderizarAulasNaoAlocadas();
+}
+
+
+function validarDrop(aula, turmaNome, dia, aulaNum) {
+  const turma = banco.turmas.find(t => t.nome === turmaNome);
+  const professor = banco.professores.find(p => p.nome === aula.professor);
+  const faixa = faixaGlobal(turma.turno, aulaNum);
+
+  if (!professor) return false;
+  if (!professor.dias.includes(dia)) return false;
+  if (!professorLivre(professor.nome, dia, faixa)) return false;
+  if (!aulaPermitidaPorNivel(professor, aulaNum, turma.turno, 1)) return false;
+
+  const disc = turma.disciplinas.find(d => d.nome === aula.disciplina);
+  if (!disc) return false;
+
+  if (!disc.permiteSequencia &&
+    disciplinaJaNoDia(turmaNome, dia, disc.nome)) {
+    return false;
+  }
+
+  return true;
+}
+
+function aplicarDrop(aula, turma, dia, aulaNum) {
+  const slot = banco.horarios[turma]
+    .find(s => s.dia === dia && s.aula === aulaNum);
+
+  slot.disciplina = aula.disciplina;
+  slot.professor = aula.professor;
+}
+
+let arrastando = false;
+
+function onClickCelula(e) {
+  if (arrastando) return;
+  destacarProfessor(e.currentTarget);
+}
+
+function onDragStartAlocada(e) {
+  arrastando = true;
+
+  const td = e.target;
+
+  const payload = {
+    tipo: "alocada",
+    turma: td.dataset.turma,
+    dia: td.dataset.dia,
+    aula: Number(td.dataset.aula),
+    disciplina: td.dataset.disciplina,
+    professor: td.dataset.professor
+  };
+
+  e.dataTransfer.setData("application/json", JSON.stringify(payload));
+}
+
+function onDragEndAlocada() {
+  setTimeout(() => {
+    arrastando = false;
+  }, 50);
 }
 
 

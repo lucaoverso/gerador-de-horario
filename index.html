@@ -3,165 +3,95 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Gerador de Horário Escolar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerador de Horario Escolar</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-
-  <h1>Gerador de Horário Escolar</h1>
-
-  <section class="card">
-    <h2>Cadastrar Professor</h2>
-    <label>
-      Professor cadastrado:
-      <select id="prof-editar" onchange="carregarProfessorParaEdicao()">
-        <option value="">-- Novo professor --</option>
-      </select>
-    </label>
-
-    <input id="prof-nome" placeholder="Nome do professor">
-
-    <fieldset>
-      <legend>Dias disponíveis</legend>
-      <label><input type="checkbox" name="prof-dias" value="Seg">Seg</label>
-      <label><input type="checkbox" name="prof-dias" value="Ter">Ter</label>
-      <label><input type="checkbox" name="prof-dias" value="Qua">Qua</label>
-      <label><input type="checkbox" name="prof-dias" value="Qui">Qui</label>
-      <label><input type="checkbox" name="prof-dias" value="Sex">Sex</label>
-    </fieldset>
-
-    <h4>Restrições de horário</h4>
-
-    <fieldset>
-      <legend>Matutino (M)</legend>
-      <label>
-        Aulas que NÃO pode pegar (ex: 1,5)
-        <input id="prof-proibidas-m" placeholder="1,5">
-      </label>
-    </fieldset>
-
-    <fieldset>
-      <legend>Vespertino (V)</legend>
-      <label>
-        Aulas que NÃO pode pegar (ex: 1,5)
-        <input id="prof-proibidas-v" placeholder="1,5">
-      </label>
-    </fieldset>
-
-    <fieldset>
-      <legend>Integral (I)</legend>
-      <label>
-        Aulas que NÃO pode pegar (ex: 1,5)
-        <input id="prof-proibidas-i" placeholder="1,5">
-      </label>
-    </fieldset>
-
-    <fieldset>
-      <legend>Ensino Médio Regular (EMR)</legend>
-      <label>
-        Aulas que NÃO pode pegar (ex: 1,5)
-        <input id="prof-proibidas-emr" placeholder="1,5">
-      </label>
-    </fieldset>
-
-    <h3>Importar Dados</h3>
-    <h2>Importar dados (CSV)</h2>
-
-    <label>
-      Turmas
-      <input type="file" accept=".csv" onchange="importarCSV('turmas', this)">
-    </label> <br>
-
-    <label>
-      Professores
-      <input type="file" accept=".csv" onchange="importarCSV('professores', this)">
-    </label> <br>
-
-    <label>
-      Disciplinas
-      <input type="file" accept=".csv" onchange="importarCSV('disciplinas', this)">
-    </label> <br>
-
-    <label>
-      Vínculos
-      <input type="file" accept=".csv" onchange="importarCSV('vinculos', this)">
-    </label>
-
-
-
-    <h4>Preferências</h4>
-
-    <label>
-      Aulas preferidas (ex: 5)
-      <input id="prof-aulas-preferidas" placeholder="5">
-    </label>
-    <button onclick="salvarProfessor()">Salvar</button>
-  </section>
-
-  <section class="card">
-    <h2>Cadastrar Turma</h2>
-    <input id="turma-nome" placeholder="Nome da turma">
-
-    <select id="turma-turno">
-      <option value="M">Matutino (5)</option>
-      <option value="V">Vespertino (5)</option>
-      <option value="I">Integral (8)</option>
-      <option value="EMR">Ensino Médio Regular(6)</option>
-    </select>
-
-    <button onclick="cadastrarTurma()">Cadastrar</button>
-  </section>
-
-  <section class="card">
-    <h2>Adicionar Disciplina</h2>
-
-    <select id="disc-turma"></select>
-    <input id="disc-nome" placeholder="Disciplina">
-    <input id="disc-aulas" type="number" placeholder="Aulas semanais">
-    <input id="disc-agrupamento" type="number" value="1" min="1" placeholder="Aulas seguidas">
-    <select id="disc-professor"></select>
-
-    <button onclick="adicionarDisciplina()">Adicionar disciplina</button>
-  </section>
-
-  <section class="card">
-    <h2>Viabilidade do Horário</h2>
-    <div id="medidor"></div>
-  </section>
-
-  <section class="card">
-    <h2>Horários</h2>
-    <label>Seed:</label>
-    <input id="seed" type="number" placeholder="opcional">
-
-    <br><br>
-    <button onclick="prepararHorarioVazio()">Gerar grade vazia</button>
-    <button onclick="gerarHorario()">Completar horário</button>
-    <button onclick="gerarHorario()">Gerar Horário do Zero</button>
-    <button onclick="gerarComNovaSeed()">Gerar Outro Horário (nova seed)</button>
-    <button onclick="congelarHorarioAtual()">Congelar Horário</button>
-
-    <hr>
-    <button onclick="limparDados()" class="perigo">Limpar dados</button>
-  </section>
-
-  <section class="card">
-    <div class="horarioFull">
-      <div id="horarios">
-        <section class="card">
-          <button onclick="mostrarTodosHorarios()">Mostrar todos</button>
-      </div>
-      <div class="naoalocadas">
-        <h2>Aulas não alocadas</h2>
-        <div id="painel-nao-alocadas"></div>
+  <header class="topo">
+    <div class="topo-conteudo">
+      <h1>Gerador de Horario Escolar</h1>
+      <p>Gere, ajuste e exporte os horarios. Cadastros e edicao de dados ficam no Editor.</p>
+      <div class="topo-links">
+        <a class="topo-link" href="editor.html">Abrir Editor de Dados</a>
       </div>
     </div>
+  </header>
 
-  </section>
-  </section>
+  <main class="layout layout-index">
+    <aside class="coluna-config">
+      <section class="card">
+        <h2>Dados do Sistema</h2>
+        <p class="nota-curta">Cadastro de professores, turmas, disciplinas, vínculos e importação CSV estão no Editor de Dados.</p>
+        <a class="botao-link btn-principal" href="editor.html">Ir para Editor de Dados</a>
+      </section>
+    </aside>
+
+    <section class="coluna-acoes">
+      <section class="card card-geracao">
+        <h2>Geracao do Horario</h2>
+        <p class="aviso-turno">
+          Simultaneidade: I1-I5 com M1-M5, I6-I8 com V2-V4, EMR1-EMR5 com V1-V5.
+        </p>
+
+        <div class="linha-controles">
+          <label for="seed">Seed</label>
+          <input id="seed" type="number" placeholder="Opcional">
+
+          <button onclick="estimarComplexidadeGeracao()">Prever complexidade</button>
+          <button class="btn-principal" onclick="gerarHorario()">Completar horario</button>
+          <button onclick="gerarHorarioDoZero()">Gerar do zero</button>
+          <button onclick="gerarComNovaSeed()">Nova seed</button>
+          <button onclick="prepararHorarioVazio()">Grade vazia</button>
+          <button onclick="congelarHorarioAtual()">Congelar atual</button>
+        </div>
+
+        <div id="relatorio-complexidade" class="painel-feedback">Estimativa de complexidade ainda nao calculada.</div>
+        <div id="relatorio-geracao" class="painel-feedback">Nenhuma geracao executada.</div>
+        <div id="relatorio-falhas" class="painel-feedback">Sem pendencias.</div>
+      </section>
+    </section>
+
+    <section class="grade-full">
+      <section class="card card-grade">
+        <div class="acoes-grade">
+          <button onclick="mostrarTodosHorarios()">Atualizar visualizacao</button>
+          <button onclick="exportarHorarioPDF()">Exportar PDF</button>
+        </div>
+
+        <div class="horarioFull">
+          <aside class="naoalocadas">
+            <h2>Aulas nao alocadas</h2>
+            <p class="nota-curta">Arraste para celulas vazias. Se houver conflito, a aula fica destacada para ajuste manual.</p>
+            <div class="ordenacao-naoalocadas">
+              <button
+                id="ord-naoalocadas-turma"
+                class="ordenacao-btn"
+                type="button"
+                onclick="ordenarAulasNaoAlocadasPor('turma')">Turma</button>
+              <button
+                id="ord-naoalocadas-professor"
+                class="ordenacao-btn"
+                type="button"
+                onclick="ordenarAulasNaoAlocadasPor('professor')">Professor</button>
+              <button
+                id="ord-naoalocadas-disciplina"
+                class="ordenacao-btn"
+                type="button"
+                onclick="ordenarAulasNaoAlocadasPor('disciplina')">Disciplina</button>
+            </div>
+            <div id="painel-nao-alocadas"></div>
+          </aside>
+
+          <div id="horarios"></div>
+        </div>
+      </section>
+    </section>
+  </main>
 
   <script src="script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </body>
 
 </html>

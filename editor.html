@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor de Dados - Horario Escolar</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header class="topo">
+    <div class="topo-conteudo">
+      <h1>Editor de Dados</h1>
+      <p>Central de cadastro, importacao e manutencao dos dados do sistema.</p>
+      <div class="topo-links">
+        <a class="topo-link" href="index.html">Voltar para Geracao de Horarios</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="layout layout-editor">
+    <aside class="coluna-config">
+      <section class="card">
+        <h2>Cadastrar Professor</h2>
+
+        <label for="prof-editar">Professor cadastrado</label>
+        <select id="prof-editar" onchange="carregarProfessorParaEdicao()">
+          <option value="">-- Novo professor --</option>
+        </select>
+
+        <label for="prof-nome">Nome</label>
+        <input id="prof-nome" placeholder="Nome do professor">
+
+        <fieldset>
+          <legend>Dias disponiveis</legend>
+          <label><input type="checkbox" name="prof-dias" value="Seg">Seg</label>
+          <label><input type="checkbox" name="prof-dias" value="Ter">Ter</label>
+          <label><input type="checkbox" name="prof-dias" value="Qua">Qua</label>
+          <label><input type="checkbox" name="prof-dias" value="Qui">Qui</label>
+          <label><input type="checkbox" name="prof-dias" value="Sex">Sex</label>
+        </fieldset>
+
+        <h3>Restricoes de horario</h3>
+        <div class="grid-turnos">
+          <label>
+            Matutino (M) - proibidas
+            <input id="prof-proibidas-m" placeholder="1,5">
+          </label>
+          <label>
+            Vespertino (V) - proibidas
+            <input id="prof-proibidas-v" placeholder="1,5">
+          </label>
+          <label>
+            Integral (I) - proibidas
+            <input id="prof-proibidas-i" placeholder="1,5">
+          </label>
+          <label>
+            EMR - proibidas
+            <input id="prof-proibidas-emr" placeholder="1,5">
+          </label>
+        </div>
+
+        <label>
+          Aulas preferidas
+          <input id="prof-aulas-preferidas" placeholder="2,3">
+        </label>
+
+        <button class="btn-principal" onclick="salvarProfessor()">Salvar professor</button>
+      </section>
+
+      <section class="card">
+        <h2>Importar Dados CSV</h2>
+
+        <label>
+          Pacote completo (varios CSVs de uma vez)
+          <input type="file" accept=".csv" multiple onchange="importarPacoteCSV(this)">
+        </label>
+
+        <label>
+          Turmas
+          <input type="file" accept=".csv" onchange="importarCSV('turmas', this)">
+        </label>
+
+        <label>
+          Professores
+          <input type="file" accept=".csv" onchange="importarCSV('professores', this)">
+        </label>
+
+        <label>
+          Disciplinas
+          <input type="file" accept=".csv" onchange="importarCSV('disciplinas', this)">
+        </label>
+
+        <label>
+          Vinculos
+          <input type="file" accept=".csv" onchange="importarCSV('vinculos', this)">
+        </label>
+      </section>
+    </aside>
+
+    <section class="coluna-acoes">
+      <section class="card">
+        <h2>Cadastrar Turma</h2>
+        <label for="turma-nome">Nome da turma</label>
+        <input id="turma-nome" placeholder="Ex: 7A">
+
+        <label for="turma-turno">Turno</label>
+        <select id="turma-turno">
+          <option value="M">Matutino (5)</option>
+          <option value="V">Vespertino (5)</option>
+          <option value="I">Integral (8)</option>
+          <option value="EMR">Ensino Medio Regular (6)</option>
+        </select>
+
+        <button onclick="cadastrarTurma()">Cadastrar turma</button>
+      </section>
+
+      <section class="card">
+        <h2>Adicionar Disciplina</h2>
+        <label for="disc-turma">Turma</label>
+        <select id="disc-turma"></select>
+
+        <label for="disc-nome">Disciplina</label>
+        <input id="disc-nome" placeholder="Ex: Matematica">
+
+        <label for="disc-aulas">Aulas semanais</label>
+        <input id="disc-aulas" type="number" min="1" placeholder="Ex: 4">
+
+        <label for="disc-agrupamento">Aulas seguidas</label>
+        <input id="disc-agrupamento" type="number" value="1" min="1" placeholder="1">
+
+        <label for="disc-professor">Professor (opcional)</label>
+        <select id="disc-professor"></select>
+
+        <button onclick="adicionarDisciplina()">Adicionar disciplina</button>
+      </section>
+
+      <section class="card">
+        <h2>Vinculo Rapido</h2>
+        <p class="nota-curta">Fluxo rápido para conectar disciplina e professor sem navegar por planilhas.</p>
+
+        <div class="vinculo-grid">
+          <label for="vinculo-turma">Turma</label>
+          <select id="vinculo-turma" onchange="atualizarVinculoRapidoDisciplinas()"></select>
+
+          <label for="vinculo-disciplina">Disciplina</label>
+          <select id="vinculo-disciplina" onchange="atualizarStatusVinculoRapido()"></select>
+
+          <label for="vinculo-professor">Professor</label>
+          <select id="vinculo-professor"></select>
+        </div>
+
+        <div class="editor-toolbar">
+          <button type="button" class="btn-principal" onclick="aplicarVinculoRapido()">Aplicar vinculo</button>
+        </div>
+
+        <div id="vinculo-estado" class="painel-feedback">Vinculo atual: sem professor.</div>
+      </section>
+
+      <section class="card">
+        <h2>Editor de Dados</h2>
+        <p class="nota-curta">Edite disciplinas e vínculos da turma sem precisar reimportar planilhas.</p>
+
+        <label for="editor-turma">Turma para editar</label>
+        <select id="editor-turma" onchange="carregarEditorTurma()"></select>
+
+        <div class="editor-toolbar">
+          <button type="button" onclick="adicionarLinhaEditorDisciplina()">Adicionar disciplina</button>
+          <button type="button" class="btn-principal" onclick="salvarEditorTurma()">Salvar alteracoes da turma</button>
+        </div>
+
+        <div id="editor-disciplinas"></div>
+      </section>
+
+      <section class="card">
+        <h2>Viabilidade</h2>
+        <p class="nota-curta">Diagnostico rapido da carga por professor.</p>
+        <div id="medidor"></div>
+      </section>
+
+      <section class="card">
+        <h2>Dados</h2>
+        <p class="nota-curta">Apaga todo o cadastro salvo localmente no navegador.</p>
+        <button onclick="limparDados()" class="perigo">Limpar dados</button>
+      </section>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

@@ -1753,7 +1753,47 @@ function professorTemAdjacencia(estado, tarefa, dia, aulaInicial) {
   return false;
 }
 
-function calcularScoreCandidato(estado, tarefa, dia, aulaInicial, penalidadeRegras) {
+function tamanhoSequenciaDisciplinaResultante(estado, tarefa, dia, aulaInicial) {
+  const limiteTurno = turnos[tarefa.turno];
+  const aulaFinal = aulaInicial + tarefa.len - 1;
+  let antes = 0;
+  let depois = 0;
+
+  for (let aula = aulaInicial - 1; aula >= 1; aula--) {
+    const slot = encontrarSlot(estado, tarefa.turma, dia, aula);
+    if (
+      !slot ||
+      slot.disciplina !== tarefa.disciplina ||
+      slot.professor !== tarefa.professor
+    ) {
+      break;
+    }
+    antes++;
+  }
+
+  for (let aula = aulaFinal + 1; aula <= limiteTurno; aula++) {
+    const slot = encontrarSlot(estado, tarefa.turma, dia, aula);
+    if (
+      !slot ||
+      slot.disciplina !== tarefa.disciplina ||
+      slot.professor !== tarefa.professor
+    ) {
+      break;
+    }
+    depois++;
+  }
+
+  return antes + tarefa.len + depois;
+}
+
+function calcularScoreCandidato(
+  estado,
+  tarefa,
+  dia,
+  aulaInicial,
+  penalidadeRegras,
+  contextoRepeticao = null
+) {
   const professorNome = tarefa.professor;
   const cargaDia = estado.profDia.get(chaveProfessorDia(professorNome, dia)) || 0;
   const cargaTurmaDia = estado.profTurmaDia.get(
@@ -1766,13 +1806,23 @@ function calcularScoreCandidato(estado, tarefa, dia, aulaInicial, penalidadeRegr
     score += tarefa.pesoPreferencia;
   }
 
-  score -= cargaDia * 1.6;
-  score -= cargaTurmaDia * 2.5;
+  score -= cargaDia * 1.8;
+  score -= cargaTurmaDia * 3.4;
 
   if (professorTemAdjacencia(estado, tarefa, dia, aulaInicial)) {
-    score += 2.5;
+    score += 1.2;
   } else if (cargaDia > 0) {
-    score -= 1.5;
+    score -= 1.0;
+  }
+
+  if (contextoRepeticao) {
+    if (contextoRepeticao.sequenciaResultante > tarefa.len) {
+      score -= (contextoRepeticao.sequenciaResultante - tarefa.len) * 6;
+    }
+
+    if (contextoRepeticao.repeticoesApos > tarefa.maxAulasNoDia) {
+      score -= (contextoRepeticao.repeticoesApos - tarefa.maxAulasNoDia) * 7;
+    }
   }
 
   score -= penalidadeRegras;
@@ -1827,12 +1877,31 @@ function gerarCandidatosParaTarefa(estado, tarefa, nivel, limite) {
       estado.discDia.get(
         chaveDisciplinaDia(tarefa.turma, tarefa.disciplina, slotInicial.dia)
       ) || 0;
+    const repeticoesApos = repeticoesNoDia + tarefa.len;
+    const sequenciaResultante = tamanhoSequenciaDisciplinaResultante(
+      estado,
+      tarefa,
+      slotInicial.dia,
+      slotInicial.aula
+    );
 
     let penalidadeRegras = 0;
+    const excessoAulasDia = repeticoesApos - tarefa.maxAulasNoDia;
+    if (excessoAulasDia > 0) {
+      if (nivel === 1) continue;
+      penalidadeRegras += excessoAulasDia * (nivel === 2 ? 16 : 8);
+    }
+
+    const excessoSequencia =
+      sequenciaResultante - tarefa.maxSequenciaConsecutiva;
+    if (excessoSequencia > 0) {
+      if (nivel === 1) continue;
+      penalidadeRegras += excessoSequencia * (nivel === 2 ? 20 : 10);
+    }
 
     if (!tarefa.permiteSequencia && repeticoesNoDia > 0) {
       if (nivel === 1) continue;
-      penalidadeRegras += repeticoesNoDia * (nivel === 2 ? 10 : 4);
+      penalidadeRegras += repeticoesNoDia * (nivel === 2 ? 12 : 6);
     }
 
     const score = calcularScoreCandidato(
@@ -1840,7 +1909,11 @@ function gerarCandidatosParaTarefa(estado, tarefa, nivel, limite) {
       tarefa,
       slotInicial.dia,
       slotInicial.aula,
-      penalidadeRegras
+      penalidadeRegras,
+      {
+        repeticoesApos,
+        sequenciaResultante
+      }
     );
 
     candidatos.push({
@@ -1938,6 +2011,17 @@ function construirTarefasPendentes(horariosBase) {
       }
 
       const agrupamento = Math.max(1, Number(disc.agrupamento || 1));
+      const permiteSequencia = Boolean(disc.permiteSequencia);
+      const pesoRestricao = pesoRestricaoProfessor(professorObj);
+      const maxSequenciaConsecutivaBase = Math.max(
+        agrupamento,
+        permiteSequencia ? 2 : agrupamento
+      );
+      const maxAulasNoDiaBase = permiteSequencia
+        ? Math.max(2, agrupamento + 1)
+        : agrupamento;
+      const prioridadeRestricao =
+        pesoRestricao * 10 + (10 - (professorObj.dias?.length || 0));
 
       const aulasJaAlocadas = slotsTurma.filter(s =>
         s.disciplina === disc.nome &&
@@ -1966,13 +2050,16 @@ function construirTarefasPendentes(horariosBase) {
           professorObj,
           diasDisponiveisSet: new Set(professorObj.dias || []),
           len: agrupamento,
-          permiteSequencia: Boolean(disc.permiteSequencia),
+          permiteSequencia,
+          prioridadeRestricao,
+          maxSequenciaConsecutiva: maxSequenciaConsecutivaBase,
+          maxAulasNoDia: maxAulasNoDiaBase,
           preferidasSet: new Set(professorObj.preferencias?.aulasPreferidas || []),
           pesoPreferencia: professorObj.preferencias?.pesoPreferencia || 1,
           dificuldade:
-            pesoRestricaoProfessor(professorObj) +
+            prioridadeRestricao * 2 +
             agrupamento * 2 +
-            (disc.permiteSequencia ? 0 : 4)
+            (permiteSequencia ? 0 : 6)
         });
 
         totalAulasPendentes += agrupamento;
@@ -1990,9 +2077,12 @@ function construirTarefasPendentes(horariosBase) {
           diasDisponiveisSet: new Set(professorObj.dias || []),
           len: faltam,
           permiteSequencia: true,
+          prioridadeRestricao,
+          maxSequenciaConsecutiva: Math.max(maxSequenciaConsecutivaBase, faltam),
+          maxAulasNoDia: Math.max(maxAulasNoDiaBase, faltam),
           preferidasSet: new Set(professorObj.preferencias?.aulasPreferidas || []),
           pesoPreferencia: professorObj.preferencias?.pesoPreferencia || 1,
-          dificuldade: pesoRestricaoProfessor(professorObj) + faltam
+          dificuldade: prioridadeRestricao * 2 + faltam
         });
 
         totalAulasPendentes += faltam;
@@ -2000,7 +2090,13 @@ function construirTarefasPendentes(horariosBase) {
     }
   }
 
-  tarefas.sort((a, b) => b.dificuldade - a.dificuldade);
+  tarefas.sort((a, b) => {
+    if (b.prioridadeRestricao !== a.prioridadeRestricao) {
+      return b.prioridadeRestricao - a.prioridadeRestricao;
+    }
+
+    return b.dificuldade - a.dificuldade;
+  });
 
   return { tarefas, falhasBase, totalAulasPendentes };
 }
@@ -2023,10 +2119,26 @@ function selecionarProximaTarefa({
     tamanhoPendentes,
     Math.max(1, limiteAnalise || tamanhoPendentes)
   );
+  let maiorPrioridadeRestricao = -Infinity;
 
   for (let pos = 0; pos < analisarAte; pos++) {
     const idx = pendentes[pos];
     const tarefa = tarefas[idx];
+    const prioridade = Number(tarefa.prioridadeRestricao || 0);
+    if (prioridade > maiorPrioridadeRestricao) {
+      maiorPrioridadeRestricao = prioridade;
+    }
+  }
+
+  const margemPrioridade = Math.max(1, maiorPrioridadeRestricao * 0.06);
+  const cortePrioridade = maiorPrioridadeRestricao - margemPrioridade;
+
+  for (let pos = 0; pos < analisarAte; pos++) {
+    const idx = pendentes[pos];
+    const tarefa = tarefas[idx];
+    const prioridade = Number(tarefa.prioridadeRestricao || 0);
+    if (prioridade < cortePrioridade) continue;
+
     const candidatos = gerarCandidatosParaTarefa(
       estado,
       tarefa,
@@ -2047,6 +2159,33 @@ function selecionarProximaTarefa({
     }
 
     if (menorQtd === 0) break;
+  }
+
+  if (taskPos < 0) {
+    for (let pos = 0; pos < analisarAte; pos++) {
+      const idx = pendentes[pos];
+      const tarefa = tarefas[idx];
+      const candidatos = gerarCandidatosParaTarefa(
+        estado,
+        tarefa,
+        nivel,
+        maxCandidatos
+      );
+
+      const qtd = candidatos.length;
+
+      if (
+        qtd < menorQtd ||
+        (qtd === menorQtd && tarefa.dificuldade > maiorDificuldade)
+      ) {
+        taskPos = pos;
+        candidatosSelecionados = candidatos;
+        menorQtd = qtd;
+        maiorDificuldade = tarefa.dificuldade;
+      }
+
+      if (menorQtd === 0) break;
+    }
   }
 
   if (taskPos < 0 && tamanhoPendentes > 0) {
